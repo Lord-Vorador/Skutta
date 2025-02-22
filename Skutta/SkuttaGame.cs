@@ -2,6 +2,10 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Skutta.Common.ValueTypes;
+using Skutta.Network;
+using Skutta.Network.NetworkMessages.Client;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
 using Skutta.GameLogic;
 using Skutta.Engine;
@@ -18,6 +22,7 @@ public class SkuttaGame : Game
     private AudioDevice _audioDevice;
     private bool _fullScreen = false;
     private KeyboardManager _keyboardManager;
+    private SkuttaClient _skuttaClient;
 
     public SkuttaGame()
     {
@@ -31,6 +36,10 @@ public class SkuttaGame : Game
     {
         // TODO: Add your initialization logic here
         _keyboardManager = new KeyboardManager();
+        _skuttaClient = new SkuttaClient();
+        _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
+        //_skuttaClient.SendMessage(new ClientConnectingMessage());
+
         base.Initialize();
     }
 
@@ -54,7 +63,13 @@ public class SkuttaGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        var input = new SkuttaInput[]
+        {
+            SkuttaInput.MoveRight,
+            SkuttaInput.MoveLeft
+        };
+        
+        _skuttaClient.SendMessage(new InputMessage(input));
 
         _player.Update(gameTime);
 
