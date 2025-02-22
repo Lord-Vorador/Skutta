@@ -12,7 +12,7 @@ namespace Skutta.GameLogic
         Texture2D playerTexture;
         Vector2 _position = new Vector2(400, 400);
         Vector2 _velocity = Vector2.Zero;
-        Point _playerSize = new Point(50, 50);
+        Point _playerSize = new Point(32, 32);
         int groundLevel; // Y position where the box rests.
 
         int screenWidth;
