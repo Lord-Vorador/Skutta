@@ -19,8 +19,8 @@ public class SkuttaGame : Game
 {
     private GraphicsDeviceManager _graphics;
     //private SpriteBatch _spriteBatch;
-    private IController _playerController;
-    private Player _player;
+    private List<IController> _playerControllers;
+    private List<Player> _players;
     private List<Pickuppable> _pickuppables = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
@@ -40,8 +40,6 @@ public class SkuttaGame : Game
         IsMouseVisible = true;
         _level = new Level();
         _audioDevice = new AudioDevice();
-        _player = new();
-        _playerController = new PlayerController(_player);
         _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
 
@@ -66,6 +64,9 @@ public class SkuttaGame : Game
         _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
         //_skuttaClient.SendMessage(new ClientConnectingMessage());
 
+        _players = new List<Player>();
+        _playerControllers = new List<IController>();
+
         base.Initialize();
     }
 
@@ -74,12 +75,19 @@ public class SkuttaGame : Game
         _audioDevice.LoadContent(Content);
         _audioDevice.PlayRandomSong();
 
+        var player = CreateNewPlayer();
+        _players.Add(player);
+        _playerControllers.Add(new PlayerController(player));
+
+        var player2 = CreateNewPlayer();
+        _players.Add(player2);
+        _playerControllers.Add(new NetworkController(player2));
+
         foreach (var pickuppable in _pickuppables)
         {
             pickuppable.Initialize(GraphicsDevice, _audioDevice);
         }
 
-        _player.Initialize(GraphicsDevice, _audioDevice);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
@@ -98,6 +106,13 @@ public class SkuttaGame : Game
 
         _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
+    }
+
+    private Player CreateNewPlayer()
+    {
+        var player = new Player();
+        player.Initialize(GraphicsDevice, _audioDevice);
+        return player;
     }
 
     protected override void Update(GameTime gameTime)
@@ -122,11 +137,22 @@ public class SkuttaGame : Game
             }
             else
             {
-                pickuppable.Update(gameTime, _player);
+                foreach (var player in _players)
+                {
+                    pickuppable.Update(gameTime, player);
+                }
             }
         }
-        _playerController.Update(gameTime);
-        _player.Update(gameTime);
+
+        foreach (var player in _players)
+        {
+            player.Update(gameTime);
+        }
+
+        foreach (var controller in _playerControllers)
+        {
+            controller.Update(gameTime);
+        }
 
         foreach (var pickuppable in _pickuppables)
         {
@@ -137,7 +163,10 @@ public class SkuttaGame : Game
             }
             else
             {
-                pickuppable.Update(gameTime, _player);
+                foreach (var player in _players)
+                {
+                    pickuppable.Update(gameTime, player);
+                }
             }
         }
 
@@ -182,14 +211,17 @@ public class SkuttaGame : Game
 
         _spriteBatch.End();
 
+        foreach (var player in _players)
+        {
+            player.Draw(gameTime);
+        }
+
         _level.Draw(_spriteBatch);
 
         foreach (var pickuppable in _pickuppables)
         {
             pickuppable.Draw(gameTime);
         }
-
-        _player.Draw(gameTime);
 
         base.Draw(gameTime);
     }
