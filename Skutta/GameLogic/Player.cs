@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -26,14 +27,16 @@ namespace Skutta.GameLogic
         int screenWidth;
         int screenHeight;
 
+        SoundEffect _jumpSFX;
 
         public Player()
         {
             body = new Rectangle(100, 100, 50, 50);
         }
 
-        public void Initialize(GraphicsDevice graphics)
+        public void Initialize(GraphicsDevice graphics, SoundEffect effect)
         {
+            _jumpSFX = effect;
             spriteBatch = new SpriteBatch(graphics);
 
             // Create a 1x1 white texture.
@@ -62,6 +65,7 @@ namespace Skutta.GameLogic
             if (keyboardState.IsKeyDown(Keys.Space) && body.Y >= groundLevel)
             {
                 jumpVelocity = -10f; // Negative velocity gives an upward impulse.
+                _jumpSFX.Play();
             }
 
             // Apply gravity continuously if the box is in the air or in upward motion.

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Skutta.GameLogic;
 
 namespace Skutta;
@@ -12,6 +14,9 @@ public class SkuttaGame : Game
     private Player _player = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
+
+    Song _song;
+    SoundEffect _soundEffect;
 
     public SkuttaGame()
     {
@@ -31,8 +36,23 @@ public class SkuttaGame : Game
     {
         //_spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _player.Initialize(GraphicsDevice);
+        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
+        _player.Initialize(GraphicsDevice, _soundEffect);
+        // TODO: use this.Content to load your game content here
 
+        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
+        
+
+
+        MediaPlayer.Play(_song);
+        MediaPlayer.Volume = 0.5f;
+        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
+        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
+
+        MediaPlayer.Play(_song);
+        MediaPlayer.Volume = 0.5f;
+
+        _player.Initialize(GraphicsDevice, _soundEffect);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
