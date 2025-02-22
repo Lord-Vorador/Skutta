@@ -26,9 +26,9 @@ namespace Skutta.GameLogic
 
             if (keyboardState.IsKeyDown(Keys.Right))
                 _player.SetMovingRight();
-
             if (keyboardState.IsKeyDown(Keys.Left))
                 _player.SetMovingLeft();
+
         }
     }
 }

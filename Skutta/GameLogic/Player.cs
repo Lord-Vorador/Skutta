@@ -114,6 +114,7 @@ namespace Skutta.GameLogic
             {
                 // No collision vertically: update Y position.
                 _position.Y = newPos.Y;
+                _velocity.Y += _gravity;
             }
             else
             {
@@ -123,7 +124,8 @@ namespace Skutta.GameLogic
             }
 
             // Apply gravity for the next frame.
-            _velocity.Y += _gravity;
+          
+            _velocity.X = 0;
 
             // Check for collision
 
@@ -288,19 +290,22 @@ namespace Skutta.GameLogic
 
         public void SetJumping()
         {
-            _audioDevice.PlaySoundEffect("jump");
-            _velocity.Y = -jumpImpulse;
+            if (_velocity.Y == 0)
+            { 
+                _audioDevice.PlaySoundEffect("jump");
+                _velocity.Y = -jumpImpulse;
+            }
         }
 
-        internal void SetMovingRight()
+        internal void SetMovingRight(int speed = 10)
         {
-            _velocity.X = 10;
+            _velocity.X = speed;
             _spriteEffects = SpriteEffects.FlipHorizontally;
         }
 
-        internal void SetMovingLeft()
+        internal void SetMovingLeft(int speed = 10)
         {
-            _velocity.X = -10;
+            _velocity.X = -speed;
             _spriteEffects = SpriteEffects.None;
         }
 
