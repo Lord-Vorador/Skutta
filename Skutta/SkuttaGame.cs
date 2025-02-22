@@ -31,14 +31,19 @@ public class SkuttaGame : Game
     //andre gör saker
     private Random _random = new();
 
+    private Level _level;
+
     public SkuttaGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        _level = new Level();
         _audioDevice = new AudioDevice();
         _player = new();
         _playerController = new PlayerController(_player);
+        _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
+        _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
 
         GenerateRandomPickuppables(10); // Generate 10 random pickuppables
     }
@@ -79,6 +84,17 @@ public class SkuttaGame : Game
 
         // Load your background image
         _backgroundTexture = Content.Load<Texture2D>("background");
+
+        //var levelGround = Content.Load<Texture2D>("level_ground");
+        //var levelPlatform = Content.Load<Texture2D>("level_platform");
+        var levelGround = new Texture2D(GraphicsDevice, 1, 1);
+        levelGround.SetData(new[] { Color.Green });
+
+        var levelPlatform = new Texture2D(GraphicsDevice, 1, 1);
+        levelPlatform.SetData(new[] { Color.Silver });
+
+
+        _level.Initialize(GraphicsDevice, [levelGround, levelPlatform]);
 
         _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
@@ -165,6 +181,8 @@ public class SkuttaGame : Game
         );
 
         _spriteBatch.End();
+
+        _level.Draw(_spriteBatch);
 
         foreach (var pickuppable in _pickuppables)
         {
