@@ -33,6 +33,10 @@ public class SkuttaGame : Game
 
     private Level _level;
 
+    private RenderTarget2D _renderTarget;
+    private int _gameWidth = 512;
+    private int _gameHeight = 288;
+
     public SkuttaGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -40,8 +44,8 @@ public class SkuttaGame : Game
         IsMouseVisible = true;
         _level = new Level();
         _audioDevice = new AudioDevice();
-        _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
-        _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
+        _graphics.PreferredBackBufferWidth = _gameWidth * 2; // Set to your default window width
+        _graphics.PreferredBackBufferHeight = _gameHeight * 2; // Set to your default window height
 
         GenerateRandomPickuppables(10); // Generate 10 random pickuppables
     }
@@ -93,6 +97,7 @@ public class SkuttaGame : Game
 
         // Load your background image
         _backgroundTexture = Content.Load<Texture2D>("background");
+        _renderTarget = new RenderTarget2D(GraphicsDevice, _gameWidth, _gameHeight);
 
         //var levelGround = Content.Load<Texture2D>("level_ground");
         var levelPlatform = Content.Load<Texture2D>("brick");
@@ -206,16 +211,23 @@ public class SkuttaGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin();
+        // Draw to render target
+        GraphicsDevice.SetRenderTarget(_renderTarget);
+        GraphicsDevice.Clear(Color.Black);
 
-        _spriteBatch.Draw(
-            _backgroundTexture,
-            new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height),
-            Color.White
-        );
-
+        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        _spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _gameWidth, _gameHeight), Color.White);
+        // Draw other game elements here
         _spriteBatch.End();
-        
+
+        // Draw render target to screen
+        GraphicsDevice.SetRenderTarget(null);
+        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        _spriteBatch.Draw(_renderTarget, GraphicsDevice.Viewport.Bounds, Color.White);
+        _spriteBatch.End();
+
+        base.Draw(gameTime);
+
         _level.Draw(_spriteBatch);
 
         foreach (var player in _players)
