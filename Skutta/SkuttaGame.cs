@@ -15,8 +15,6 @@ public class SkuttaGame : Game
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
 
-
-    KeyboardState _previousKeyboardState;
     Song _song;
     SoundEffect _soundEffect;
 
@@ -38,6 +36,16 @@ public class SkuttaGame : Game
     {
         //_spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
+        _player.Initialize(GraphicsDevice, _soundEffect);
+        // TODO: use this.Content to load your game content here
+
+        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
+        
+
+
+        MediaPlayer.Play(_song);
+        MediaPlayer.Volume = 0.5f;
         _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
         _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
 
