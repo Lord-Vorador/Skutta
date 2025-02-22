@@ -62,7 +62,7 @@ namespace Skutta.GameLogic
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw level
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
             for (int i = 0; i < map.Length; ++i)
             {
@@ -75,10 +75,9 @@ namespace Skutta.GameLogic
                     int x = (column * tileWidth);
                     int y = (row * tileHeight);
 
-                    spriteBatch.Draw(mapSprites[map[i]-1], new Rectangle(x, y, tileWidth, tileHeight), Color.White);
+                    spriteBatch.Draw(mapSprites[map[i] - 1], new Vector2((int)x, (int)y), null, Color.White, 0f, Vector2.Zero, new Vector2(2f, 2f), SpriteEffects.None, 0f);
                 }
             }
-            
 
             spriteBatch.End();
         }

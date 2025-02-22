@@ -71,6 +71,8 @@ public class SkuttaGame : Game
         _players = new List<Player>();
         _playerControllers = new List<IController>();
 
+        _graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+
         base.Initialize();
     }
 
@@ -216,7 +218,7 @@ public class SkuttaGame : Game
         GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _gameWidth, _gameHeight), Color.White);
+        _spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _gameWidth, _gameHeight), Color.Gray);
         // Draw other game elements here
         _spriteBatch.End();
 
