@@ -86,15 +86,15 @@ public class SkuttaGame : Game
         _backgroundTexture = Content.Load<Texture2D>("background");
 
         //var levelGround = Content.Load<Texture2D>("level_ground");
-        //var levelPlatform = Content.Load<Texture2D>("level_platform");
+        var levelPlatform = Content.Load<Texture2D>("level_platform");
         var levelGround = new Texture2D(GraphicsDevice, 1, 1);
         levelGround.SetData(new[] { Color.Green });
 
-        var levelPlatform = new Texture2D(GraphicsDevice, 1, 1);
-        levelPlatform.SetData(new[] { Color.Silver });
+        //var levelPlatform = new Texture2D(GraphicsDevice, 1, 1);
+        //levelPlatform.SetData(new[] { Color.Silver });
 
 
-        _level.Initialize(GraphicsDevice, [levelGround, levelPlatform]);
+        _level.Initialize(GraphicsDevice, [levelPlatform, levelGround]);
 
         _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
