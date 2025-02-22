@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Skutta.GameLogic;
+using Skutta.Engine;
 
 namespace Skutta;
 
@@ -14,6 +15,8 @@ public class SkuttaGame : Game
     private Player _player = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
+    private bool _fullScreen = false;
+    private KeyboardManager _keyboardManager;
 
     Song _song;
     SoundEffect _soundEffect;
@@ -28,7 +31,7 @@ public class SkuttaGame : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-
+        _keyboardManager = new KeyboardManager();
         base.Initialize();
     }
 
@@ -41,8 +44,6 @@ public class SkuttaGame : Game
         // TODO: use this.Content to load your game content here
 
         _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
-        
-
 
         MediaPlayer.Play(_song);
         MediaPlayer.Volume = 0.5f;
@@ -57,6 +58,9 @@ public class SkuttaGame : Game
 
         // Load your background image
         _backgroundTexture = Content.Load<Texture2D>("background");
+
+        _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
+        _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
     }
 
     protected override void Update(GameTime gameTime)
@@ -68,7 +72,30 @@ public class SkuttaGame : Game
 
         _player.Update(gameTime);
 
+        if (_keyboardManager.IsKeyPressedOnce(Keys.F11))
+        {
+            ToggleFullScreen();
+        }
+
+        _keyboardManager.Update();
         base.Update(gameTime);
+    }
+    private void ToggleFullScreen()
+    {
+        _fullScreen = !_fullScreen;
+        if (_fullScreen)
+        {
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            Window.IsBorderless = true;
+        }
+        else
+        {
+            _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
+            _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
+            Window.IsBorderless = false;
+        }
+        _graphics.ApplyChanges();
     }
 
     protected override void Draw(GameTime gameTime)
