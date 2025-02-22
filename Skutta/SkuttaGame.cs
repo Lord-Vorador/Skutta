@@ -1,13 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Skutta.GameLogic;
 
 namespace Skutta;
 
 public class SkuttaGame : Game
 {
     private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    //private SpriteBatch _spriteBatch;
+    private Player _player = new();
 
     public SkuttaGame()
     {
@@ -25,8 +27,9 @@ public class SkuttaGame : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        //_spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        _player.Initialize(GraphicsDevice);
         // TODO: use this.Content to load your game content here
     }
 
@@ -37,6 +40,8 @@ public class SkuttaGame : Game
 
         // TODO: Add your update logic here
 
+        _player.Update(gameTime);
+
         base.Update(gameTime);
     }
 
@@ -45,6 +50,8 @@ public class SkuttaGame : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
+
+        _player.Draw(gameTime);
 
         base.Draw(gameTime);
     }
