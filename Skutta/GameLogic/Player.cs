@@ -6,13 +6,14 @@ using System;
 
 namespace Skutta.GameLogic
 {
-    class Player
+    public class Player
     {
         SpriteBatch spriteBatch;
         Texture2D playerTexture;
         Vector2 _position = new Vector2(400, 400);
         Vector2 _velocity = Vector2.Zero;
         Point _playerSize = new Point(50, 50);
+        float jumpImpulse = 10f;
         int groundLevel; // Y position where the box rests.
 
         int screenWidth;
@@ -76,7 +77,7 @@ namespace Skutta.GameLogic
         public void SetJumping()
         {
             _audioDevice.PlaySoundEffect("jump");
-            _velocity.Y = -10;
+            _velocity.Y = -jumpImpulse;
         }
 
         internal void SetMovingRight()
@@ -87,6 +88,11 @@ namespace Skutta.GameLogic
         internal void SetMovingLeft()
         {
             _velocity.X = -10;
+        }
+
+        public void AddEffect()
+        {
+            jumpImpulse += 5f;
         }
     }
 }
