@@ -87,7 +87,7 @@ public class SkuttaGame : Game
         _players.Add(player2);
         _playerControllers.Add(new NetworkController(player2));
 
-        var jumpPickupTexture = Content.Load<Texture2D>("jump-pickup");
+        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
         foreach (var pickuppable in _pickuppables)
         {
             pickuppable.Initialize(GraphicsDevice, [jumpPickupTexture], _audioDevice);
