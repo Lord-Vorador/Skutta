@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Skutta.GameLogic
 {
-    class Player
+    public class Player
     {
         SpriteBatch spriteBatch;
         // A texture for the box and its rectangle
@@ -21,6 +21,7 @@ namespace Skutta.GameLogic
         // Jumping related fields.
         bool isJumping = false;
         float jumpVelocity = 0f;
+        float jumpImpulse = 10f;
         float gravity = 0.5f;
         int groundLevel; // Y position where the box rests.
 
@@ -64,7 +65,7 @@ namespace Skutta.GameLogic
             // Initiate a jump when space is pressed, but only if the box is on the ground.
             if (keyboardState.IsKeyDown(Keys.Space) && body.Y >= groundLevel)
             {
-                jumpVelocity = -10f; // Negative velocity gives an upward impulse.
+                jumpVelocity = -jumpImpulse; // Negative velocity gives an upward impulse.
                 _audioDevice.PlaySoundEffect("jump");
             }
 
@@ -101,6 +102,16 @@ namespace Skutta.GameLogic
             // Draw the box texture, stretching it to the rectangle's size and tinting it red
             spriteBatch.Draw(playerTexture, body, Color.Red);
             spriteBatch.End();
+        }
+
+        public Rectangle GetBody()
+        {
+            return body;
+        }
+
+        public void AddEffect(string name)
+        {
+            jumpImpulse += 5f;
         }
     }
 }

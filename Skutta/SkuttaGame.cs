@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Skutta.GameLogic;
 using Skutta.Engine;
+using System.Numerics;
+using System.Collections.Generic;
+using System;
 
 namespace Skutta;
 
@@ -13,18 +16,31 @@ public class SkuttaGame : Game
     private GraphicsDeviceManager _graphics;
     //private SpriteBatch _spriteBatch;
     private Player _player = new();
+    private List<Pickuppable> _pickuppables = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
-    private AudioDevice _audioDevice;
+    private AudioDevice _audioDevice = new();
     private bool _fullScreen = false;
     private KeyboardManager _keyboardManager;
+    private Random _random = new();
 
     public SkuttaGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        _audioDevice = new AudioDevice();
+
+        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
+    }
+
+    private void GenerateRandomPickuppables(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            int xPos = _random.Next(0, 1024);
+            int yPos = _random.Next(0, 576);
+            _pickuppables.Add(new Pickuppable(xPos, yPos));
+        }
     }
 
     protected override void Initialize()
@@ -38,6 +54,11 @@ public class SkuttaGame : Game
     {
         _audioDevice.LoadContent(Content);
         _audioDevice.PlayRandomSong();
+
+        foreach (var pickuppable in _pickuppables)
+        {
+            pickuppable.Initialize(GraphicsDevice, _audioDevice);
+        }
 
         _player.Initialize(GraphicsDevice, _audioDevice);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -55,8 +76,20 @@ public class SkuttaGame : Game
             Exit();
 
         // TODO: Add your update logic here
-
         _player.Update(gameTime);
+
+        foreach (var pickuppable in _pickuppables)
+        {
+            if (pickuppable.IsPicked)
+            {
+                _pickuppables.Remove(pickuppable);
+                break;
+            }
+            else
+            {
+                pickuppable.Update(gameTime, _player);
+            }
+        }
 
         if (_keyboardManager.IsKeyPressedOnce(Keys.F11))
         {
@@ -66,6 +99,7 @@ public class SkuttaGame : Game
         _keyboardManager.Update();
         base.Update(gameTime);
     }
+
     private void ToggleFullScreen()
     {
         _fullScreen = !_fullScreen;
@@ -97,6 +131,11 @@ public class SkuttaGame : Game
         );
 
         _spriteBatch.End();
+
+        foreach (var pickuppable in _pickuppables)
+        {
+            pickuppable.Draw(gameTime);
+        }
 
         _player.Draw(gameTime);
 
