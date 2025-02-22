@@ -10,6 +10,8 @@ public class SkuttaGame : Game
     private GraphicsDeviceManager _graphics;
     //private SpriteBatch _spriteBatch;
     private Player _player = new();
+    private SpriteBatch _spriteBatch;
+    private Texture2D _backgroundTexture;
 
     public SkuttaGame()
     {
@@ -30,7 +32,11 @@ public class SkuttaGame : Game
         //_spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _player.Initialize(GraphicsDevice);
-        // TODO: use this.Content to load your game content here
+
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        // Load your background image
+        _backgroundTexture = Content.Load<Texture2D>("background");
     }
 
     protected override void Update(GameTime gameTime)
@@ -49,7 +55,15 @@ public class SkuttaGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+
+        _spriteBatch.Draw(
+            _backgroundTexture,
+            new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height),
+            Color.White
+        );
+
+        _spriteBatch.End();
 
         _player.Draw(gameTime);
 
