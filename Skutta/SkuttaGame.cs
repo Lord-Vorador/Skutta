@@ -111,7 +111,7 @@ public class SkuttaGame : Game
     private Player CreateNewPlayer()
     {
         var player = new Player();
-        player.Initialize(GraphicsDevice, _audioDevice);
+        player.Initialize(GraphicsDevice, _audioDevice, Content);
         return player;
     }
 

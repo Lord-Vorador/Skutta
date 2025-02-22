@@ -1,16 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Reflection;
+using System.Reflection.Metadata;
 
 namespace Skutta.GameLogic
 {
     public class Player
     {
         SpriteBatch spriteBatch;
-        Texture2D playerTexture;
+        GraphicsDevice _graphicsDevice;
+        SpriteEffects _spriteEffects;
+        Rectangle _body;
+        Texture2D _playerTexture;
         Vector2 _position = new Vector2(400, 200);
         Vector2 _velocity = Vector2.Zero;
         Point _playerSize = new Point(32, 32);
@@ -28,14 +33,14 @@ namespace Skutta.GameLogic
         {
         }
 
-        public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice)
+        public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice, ContentManager content)
         {
             _audioDevice = audioDevice;
             spriteBatch = new SpriteBatch(graphics);
 
             // Create a 1x1 white texture.
-            playerTexture = new Texture2D(graphics, 1, 1);
-            playerTexture.SetData(new[] { Color.White });
+            _playerTexture = new Texture2D(graphics, 1, 1);
+            _playerTexture = content.Load<Texture2D>("player2");
 
             screenWidth = graphics.Viewport.Width;
             screenHeight = graphics.Viewport.Height;
@@ -70,9 +75,6 @@ namespace Skutta.GameLogic
             }
             return false;
         }
-
-
-
 
         public void Update(GameTime gameTime, Level level)
         {
@@ -278,8 +280,9 @@ namespace Skutta.GameLogic
             var rectangle = new Microsoft.Xna.Framework.Rectangle(new Point((int)_position.X, (int)_position.Y), _playerSize);
 
             spriteBatch.Begin();
-            // Draw the box texture, stretching it to the rectangle's size and tinting it red
-            spriteBatch.Draw(playerTexture, rectangle, Color.Red);
+            Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
+            spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(_playerTexture.Width / 2f, _playerTexture.Height / 2f),
+                1f, _spriteEffects, 0f);
             spriteBatch.End();
         }
 
@@ -292,11 +295,13 @@ namespace Skutta.GameLogic
         internal void SetMovingRight()
         {
             _velocity.X = 10;
+            _spriteEffects = SpriteEffects.FlipHorizontally;
         }
 
         internal void SetMovingLeft()
         {
             _velocity.X = -10;
+            _spriteEffects = SpriteEffects.None;
         }
 
         public void AddEffect(string name)
