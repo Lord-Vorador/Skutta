@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -51,10 +52,11 @@ namespace Skutta.GameLogic
             //body = new Rectangle(100, 100, 50, 50);
         }
 
+        public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice)
         public void Initialize(GraphicsDevice graphics, Model model)
         {
-            //spriteBatch = new SpriteBatch(graphics);
-            playerModel = model;
+            _audioDevice = audioDevice;
+            spriteBatch = new SpriteBatch(graphics);
 
             // Create a 1x1 white texture.
             playerTexture = new Texture2D(graphics, 1, 1);
@@ -97,6 +99,8 @@ namespace Skutta.GameLogic
             // Jumping logic.
             if (keyboard.IsKeyDown(Keys.Space) && !isJumping)
             {
+                jumpVelocity = -10f; // Negative velocity gives an upward impulse.
+                _audioDevice.PlaySoundEffect("jump");
                 isJumping = true;
                 jumpVelocity = 10f; // Impulse upward.
             }
