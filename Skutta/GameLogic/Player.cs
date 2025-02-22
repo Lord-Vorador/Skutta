@@ -100,5 +100,15 @@ namespace Skutta.GameLogic
         {
             return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
         }
+
+        public Rectangle GetBody()
+        {
+            return body;
+        }
+
+        public void AddEffect(string name)
+        {
+            jumpImpulse += 5f;
+        }
     }
 }

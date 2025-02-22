@@ -21,6 +21,7 @@ public class SkuttaGame : Game
     //private SpriteBatch _spriteBatch;
     private IController _playerController;
     private Player _player;
+    private List<Pickuppable> _pickuppables = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
     private AudioDevice _audioDevice = new();
@@ -97,6 +98,18 @@ public class SkuttaGame : Game
         
         _skuttaClient.SendMessage(new InputMessage(input));
 
+        foreach (var pickuppable in _pickuppables)
+        {
+            if (pickuppable.IsPicked)
+            {
+                _pickuppables.Remove(pickuppable);
+                break;
+            }
+            else
+            {
+                pickuppable.Update(gameTime, _player);
+            }
+        }
         _playerController.Update(gameTime);
         _player.Update(gameTime);
 
