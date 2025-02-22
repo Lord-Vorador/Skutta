@@ -91,14 +91,19 @@ namespace Skutta.GameLogic
             _velocity.X = -10;
         }
 
-        public Rectangle GetBody()
-        {
-            return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
-        }
-
         public void AddEffect(string name)
         {
             jumpImpulse += 5f;
+        }
+
+        internal void SetPosition(Vector2 position)
+        {
+            _position = position;
+        }
+
+        internal Rectangle GetPlayerBoundingBox()
+        {
+            return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
         }
     }
 }
