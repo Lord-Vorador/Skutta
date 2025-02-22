@@ -210,13 +210,13 @@ public class SkuttaGame : Game
         );
 
         _spriteBatch.End();
+        
+        _level.Draw(_spriteBatch);
 
         foreach (var player in _players)
         {
             player.Draw(gameTime);
         }
-
-        _level.Draw(_spriteBatch);
 
         foreach (var pickuppable in _pickuppables)
         {
