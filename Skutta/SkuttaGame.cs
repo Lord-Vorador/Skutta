@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
 using Skutta.GameLogic;
 using Skutta.Engine;
+using System;
 
 namespace Skutta;
 
@@ -16,8 +17,8 @@ public class SkuttaGame : Game
 {
     private GraphicsDeviceManager _graphics;
     //private SpriteBatch _spriteBatch;
-    private IController _playerController;
-    private Player _player;
+    private List<IController> _playerControllers;
+    private List<Player> _players;
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
     private AudioDevice _audioDevice;
@@ -31,8 +32,6 @@ public class SkuttaGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _audioDevice = new AudioDevice();
-        _player = new();
-        _playerController = new PlayerController(_player);
     }
 
     protected override void Initialize()
@@ -43,6 +42,9 @@ public class SkuttaGame : Game
         _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
         //_skuttaClient.SendMessage(new ClientConnectingMessage());
 
+        _players = new List<Player>();
+        _playerControllers = new List<IController>();
+
         base.Initialize();
     }
 
@@ -51,7 +53,14 @@ public class SkuttaGame : Game
         _audioDevice.LoadContent(Content);
         _audioDevice.PlayRandomSong();
 
-        _player.Initialize(GraphicsDevice, _audioDevice);
+        var player = CreateNewPlayer();
+        _players.Add(player);
+        _playerControllers.Add(new PlayerController(player));
+
+        var player2 = CreateNewPlayer();
+        _players.Add(player2);
+        _playerControllers.Add(new NetworkController(player2));
+
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
@@ -59,6 +68,13 @@ public class SkuttaGame : Game
 
         _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
+    }
+
+    private Player CreateNewPlayer()
+    {
+        var player = new Player();
+        player.Initialize(GraphicsDevice, _audioDevice);
+        return player;
     }
 
     protected override void Update(GameTime gameTime)
@@ -74,9 +90,15 @@ public class SkuttaGame : Game
         
         _skuttaClient.SendMessage(new InputMessage(input));
 
-        _playerController.Update(gameTime);
+        foreach (var player in _players)
+        {
+            player.Update(gameTime);
+        }
 
-        _player.Update(gameTime);
+        foreach (var controller in _playerControllers)
+        {
+            controller.Update(gameTime);
+        }
 
         if (_keyboardManager.IsKeyPressedOnce(Keys.F11))
         {
@@ -118,7 +140,10 @@ public class SkuttaGame : Game
 
         _spriteBatch.End();
 
-        _player.Draw(gameTime);
+        foreach (var player in _players)
+        {
+            player.Draw(gameTime);
+        }
 
         base.Draw(gameTime);
     }

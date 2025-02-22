@@ -88,5 +88,10 @@ namespace Skutta.GameLogic
         {
             _velocity.X = -10;
         }
+
+        internal void SetPosition(Vector2 position)
+        {
+            _position = position;
+        }
     }
 }
