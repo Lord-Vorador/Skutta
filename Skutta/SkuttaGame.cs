@@ -98,6 +98,7 @@ public class SkuttaGame : Game
         _skuttaClient.SendMessage(new InputMessage(input));
 
         _playerController.Update(gameTime);
+        _player.Update(gameTime);
 
         foreach (var pickuppable in _pickuppables)
         {

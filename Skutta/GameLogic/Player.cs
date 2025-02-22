@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Reflection;
 
 namespace Skutta.GameLogic
 {
@@ -90,9 +91,14 @@ namespace Skutta.GameLogic
             _velocity.X = -10;
         }
 
-        public void AddEffect()
+        public void AddEffect(string effect)
         {
             jumpImpulse += 5f;
+        }
+
+        public Rectangle GetBody()
+        {
+            return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
         }
     }
 }
