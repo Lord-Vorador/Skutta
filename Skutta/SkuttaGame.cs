@@ -30,7 +30,6 @@ public class SkuttaGame : Game
     private SkuttaClient _skuttaClient;
     //andre gör saker
     private Random _random = new();
-    private List<Pickuppable> _pickuppables = new();
 
     public SkuttaGame()
     {
