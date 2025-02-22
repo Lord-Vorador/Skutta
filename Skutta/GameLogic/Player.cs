@@ -14,27 +14,47 @@ namespace Skutta.GameLogic
         SpriteBatch spriteBatch;
         // A texture for the box and its rectangle
         Texture2D playerTexture;
-        Rectangle body;
-        int playerVelocity = 5; // Movement speed for the box
+        Model playerModel;
 
-        // Jumping related fields.
+        // The player's position in world space.
+        Vector3 playerPosition = new Vector3(100, 300, 0);
+
+        Rectangle body;
+        //int playerVelocity = 5; // Movement speed for the box
+
+        float moveSpeed = 5f;
         bool isJumping = false;
         float jumpVelocity = 0f;
         float gravity = 0.5f;
-        int groundLevel; // Y position where the box rests.
+        float groundLevel = 0f; // Y position where the box rests.
+
+        // Locked screen camera parameters.
+        // For an 800x600 screen, we'll lock the camera's target to the center (400,300)
+        // and place the camera at a fixed distance along Z.
+        Vector3 lockedScreenCenter = new Vector3(400, 300, 0);
+        float cameraDistance = 800f;
 
         int screenWidth;
         int screenHeight;
 
+        // Camera matrices.
+        Matrix view;
+        Matrix projection;
+
+        // Define the half-size of the player's bounding box.
+        // (For example, if the player is 50x50 in size, half-size is 25.)
+        Vector3 boundingBoxHalfExtents = new Vector3(6.5f, 6.5f, 0);
+
 
         public Player()
         {
-            body = new Rectangle(100, 100, 50, 50);
+            //body = new Rectangle(100, 100, 50, 50);
         }
 
-        public void Initialize(GraphicsDevice graphics)
+        public void Initialize(GraphicsDevice graphics, Model model)
         {
-            spriteBatch = new SpriteBatch(graphics);
+            //spriteBatch = new SpriteBatch(graphics);
+            playerModel = model;
 
             // Create a 1x1 white texture.
             playerTexture = new Texture2D(graphics, 1, 1);
@@ -43,60 +63,122 @@ namespace Skutta.GameLogic
             screenWidth = graphics.Viewport.Width;
             screenHeight = graphics.Viewport.Height;
 
-            groundLevel = screenHeight - body.Height;
+            //groundLevel = screenHeight - body.Height;
 
-            body.Y = groundLevel;
+            //body.Y = groundLevel;
+            // Place the player on the ground.
+            playerPosition.Y = groundLevel;
+
+            // Set up the locked camera.
+            // Position the camera directly above the locked screen center at a fixed Z distance.
+            view = Matrix.CreateLookAt(
+                new Vector3(lockedScreenCenter.X, lockedScreenCenter.Y, cameraDistance), // Camera position.
+                lockedScreenCenter,                                                     // Camera target.
+                Vector3.Up);                                                            // Up vector.
+
+            // Create a perspective projection matrix.
+            projection = Matrix.CreatePerspectiveFieldOfView(
+                MathHelper.PiOver4,
+                graphics.Viewport.AspectRatio,
+                1.0f,
+                1000.0f);
         }
 
         public void Update(GameTime gameTime)
         {
-            var keyboardState = Keyboard.GetState();
+            var keyboard = Keyboard.GetState();
 
-            // Horizontal movement with arrow keys.
-            if (keyboardState.IsKeyDown(Keys.Right))
-                body.X += playerVelocity;
-            if (keyboardState.IsKeyDown(Keys.Left))
-                body.X -= playerVelocity;
+            // Horizontal movement.
+            if (keyboard.IsKeyDown(Keys.Left))
+                playerPosition.X -= moveSpeed;
+            if (keyboard.IsKeyDown(Keys.Right))
+                playerPosition.X += moveSpeed;
 
-            // Initiate a jump when space is pressed, but only if the box is on the ground.
-            if (keyboardState.IsKeyDown(Keys.Space) && body.Y >= groundLevel)
+            // Jumping logic.
+            if (keyboard.IsKeyDown(Keys.Space) && !isJumping)
             {
-                jumpVelocity = -10f; // Negative velocity gives an upward impulse.
+                isJumping = true;
+                jumpVelocity = 10f; // Impulse upward.
             }
-
-            // Apply gravity continuously if the box is in the air or in upward motion.
-            if (body.Y < groundLevel || jumpVelocity < 0)
+            if (isJumping)
             {
-                body.Y += (int)jumpVelocity;
-                jumpVelocity += gravity;
+                playerPosition.Y += jumpVelocity;
+                jumpVelocity -= gravity;
 
-                // If the box reaches or falls below ground level, snap it to the ground.
-                if (body.Y >= groundLevel)
+                if (playerPosition.Y <= groundLevel)
                 {
-                    body.Y = groundLevel;
+                    playerPosition.Y = groundLevel;
+                    isJumping = false;
                     jumpVelocity = 0f;
                 }
             }
 
-            // Collision detection against the screen boundaries.
+            // Create the player's BoundingBox in world space.
+            // For a 2D game, we keep Z constant.
+            BoundingBox playerBox = new BoundingBox(
+                playerPosition - boundingBoxHalfExtents,
+                playerPosition + boundingBoxHalfExtents);
 
-            // Prevent moving off the left edge.
-            if (body.X < 0)
-                body.X = 0;
-            // Prevent moving off the right edge.
-            if (body.X + body.Width > screenWidth)
-                body.X = screenWidth - body.Width;
-            // Prevent moving above the top edge.
-            if (body.Y < 0)
-                body.Y = 0;
+            // Create a BoundingBox representing the screen boundaries.
+            // Here we assume the screen's origin (0,0) maps to the bottom-left/top-left,
+            // depending on your coordinate system. Adjust as needed.
+            BoundingBox screenBox = new BoundingBox(
+                new Vector3(0, 0, 0),
+                new Vector3(screenWidth, screenHeight, 0));
+
+            // Check for collision: if the player's bounding box extends beyond the screen bounds,
+            // reposition the player accordingly.
+            if (!playerBox.Intersects(screenBox))
+            {
+                // Left boundary.
+                if (playerBox.Min.X < screenBox.Min.X)
+                    playerPosition.X = screenBox.Min.X + boundingBoxHalfExtents.X;
+                // Right boundary.
+                if (playerBox.Max.X > screenBox.Max.X)
+                    playerPosition.X = screenBox.Max.X - boundingBoxHalfExtents.X;
+                // Top boundary.
+                if (playerBox.Min.Y < screenBox.Min.Y)
+                    playerPosition.Y = screenBox.Min.Y + boundingBoxHalfExtents.Y;
+                // Bottom boundary.
+                if (playerBox.Max.Y > screenBox.Max.Y)
+                    playerPosition.Y = screenBox.Max.Y - boundingBoxHalfExtents.Y;
+            }
         }
 
         public void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            // Draw the box texture, stretching it to the rectangle's size and tinting it red
-            spriteBatch.Draw(playerTexture, body, Color.Red);
-            spriteBatch.End();
+            // Create the world matrix for the player model.
+            // Since this is a 2D platformer, we only modify X and Y (leaving Z constant).
+            //Matrix world = Matrix.CreateScale(1.0f) *
+            //               Matrix.CreateTranslation(playerPosition);
+            // Create the world matrix for the player model.
+            Matrix world = Matrix.CreateTranslation(playerPosition);
+
+            // Draw the 3D player model.
+            foreach (ModelMesh mesh in playerModel.Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.World = world;
+                    effect.View = view;
+                    effect.Projection = projection;
+                    effect.EnableDefaultLighting();
+                    //Optionally, tweak light parameters:
+                    //effect.DiffuseColor = new Vector3(1, 1, 1);
+                    //effect.AmbientLightColor = new Vector3(0.5f, 0.5f, 0.5f);
+                    effect.TextureEnabled = true; // Set to true if you want to use textures.
+                    effect.PreferPerPixelLighting = true;
+                    effect.TextureEnabled = true;
+                    effect.Alpha = 1;
+                    effect.AmbientLightColor = new Vector3(0.5f, 0.5f, 0.5f);
+                    effect.DiffuseColor = new Vector3(1,1,1);
+                }
+                mesh.Draw();
+            }
+            //spriteBatch.Begin();
+            //// Draw the box texture, stretching it to the rectangle's size and tinting it red
+            //spriteBatch.Draw(playerTexture, body, Color.Red);
+            //spriteBatch.End();
         }
     }
 }

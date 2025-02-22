@@ -16,6 +16,8 @@ public class SkuttaGame : Game
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        _graphics.PreferredBackBufferWidth = 800;
+        _graphics.PreferredBackBufferHeight = 600;
     }
 
     protected override void Initialize()
@@ -28,8 +30,10 @@ public class SkuttaGame : Game
     protected override void LoadContent()
     {
         //_spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        _player.Initialize(GraphicsDevice);
+        var playerModel = Content.Load<Model>("Models/poop");
+        //Texture2D texture = Content.Load<Texture2D>("Images/poop");
+        //playerModel.Meshes[0].Effects[0].Texture = texture;
+        _player.Initialize(GraphicsDevice, playerModel);
         // TODO: use this.Content to load your game content here
     }
 
