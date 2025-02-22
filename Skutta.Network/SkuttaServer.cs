@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Skutta.Network.NetworkMessages;
 using Skutta.Network.NetworkMessages.Client;
 using System;
 using System.Collections.Generic;
@@ -36,9 +37,9 @@ public class SkuttaServer
                         //
 
                         // by design, the first byte always indicates action
-                        switch ((MessageTypes)msg.ReadByte())
+                        switch ((SkuttaMessageTypes)msg.ReadByte())
                         {
-                            case MessageTypes.ClientConnecting:
+                            case SkuttaMessageTypes.ClientConnecting:
 
                                 // It's a host wanting to register its presence
                                 //var id = msg.ReadInt64(); // server unique identifier
@@ -103,7 +104,7 @@ public class SkuttaServer
                         Console.WriteLine(msg.ReadString());
                         break;
                     case NetIncomingMessageType.Data:
-                        HandleMessage(msg);
+                        HandleGameMessage(msg);
                     break;
                     default:
                             //Console.WriteLine(msg.ReadString());
@@ -115,9 +116,16 @@ public class SkuttaServer
         server.Shutdown("shutting down");
     }
 
-    private void HandleMessage(NetIncomingMessage msg)
+    private void HandleGameMessage(NetIncomingMessage msg)
     {
-        var message = MessageCreator.Create(msg);
+        //var msgType = msg.ReadByte();
+        var obj = SerializationHelper.DeserializeFromBytes<InputMessage>(msg.Data);
+        //msg.ReadAllProperties(obj);
+        //var skuttaMessage = MessageCreator.ParseMessage(msg);
+        //if (skuttaMessage == null)
+        //    return;
+
+        //var message = MessageCreator.Create(msg);
 
         //switch ((GameServerMessageType)msg.ReadByte())
         //{

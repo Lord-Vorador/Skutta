@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Skutta.Network.NetworkMessages.Client;
 using Skutta.Network.NetworkMessages.Common;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,8 @@ namespace Skutta.Network
         public void SendMessage(INetworkMessage msg)
         {
             NetOutgoingMessage outgoingMsg = _client.CreateMessage();
-            outgoingMsg.Write(SerializationHelper.SerializeToBytes(msg));
+            //outgoingMsg.Write(msg.GetBytes());
+            outgoingMsg.Write(SerializationHelper.SerializeToBytes<InputMessage>((InputMessage)msg));
             _client.SendMessage(outgoingMsg, NetDeliveryMethod.ReliableOrdered);
         }
     }

@@ -25,7 +25,7 @@ public class SkuttaGame : Game
     {
         _skuttaClient = new SkuttaClient();
         _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
-        _skuttaClient.SendMessage(new ClientConnectingMessage());
+        //_skuttaClient.SendMessage(new ClientConnectingMessage());
 
         base.Initialize();
     }
@@ -42,13 +42,13 @@ public class SkuttaGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        var input = new List<SkuttaInput>()
+        var input = new SkuttaInput[]
         {
             SkuttaInput.MoveRight,
             SkuttaInput.MoveLeft
         };
         
-        _skuttaClient.SendMessage(new NewInputMessage(input));
+        _skuttaClient.SendMessage(new InputMessage(input));
 
         base.Update(gameTime);
     }
