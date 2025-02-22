@@ -15,17 +15,16 @@ public class SkuttaGame : Game
     private Player _player = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
+    private AudioDevice _audioDevice;
     private bool _fullScreen = false;
     private KeyboardManager _keyboardManager;
-
-    Song _song;
-    SoundEffect _soundEffect;
 
     public SkuttaGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        _audioDevice = new AudioDevice();
     }
 
     protected override void Initialize()
@@ -37,7 +36,8 @@ public class SkuttaGame : Game
 
     protected override void LoadContent()
     {
-        //_spriteBatch = new SpriteBatch(GraphicsDevice);
+        _audioDevice.LoadContent(Content);
+        _audioDevice.PlayRandomSong();
 
         _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
         _player.Initialize(GraphicsDevice, _soundEffect);

@@ -27,16 +27,16 @@ namespace Skutta.GameLogic
         int screenWidth;
         int screenHeight;
 
-        SoundEffect _jumpSFX;
+        private AudioDevice _audioDevice;
 
         public Player()
         {
             body = new Rectangle(100, 100, 50, 50);
         }
 
-        public void Initialize(GraphicsDevice graphics, SoundEffect effect)
+        public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice)
         {
-            _jumpSFX = effect;
+            _audioDevice = audioDevice;
             spriteBatch = new SpriteBatch(graphics);
 
             // Create a 1x1 white texture.
@@ -65,7 +65,7 @@ namespace Skutta.GameLogic
             if (keyboardState.IsKeyDown(Keys.Space) && body.Y >= groundLevel)
             {
                 jumpVelocity = -10f; // Negative velocity gives an upward impulse.
-                _jumpSFX.Play();
+                _audioDevice.PlaySoundEffect("jump");
             }
 
             // Apply gravity continuously if the box is in the air or in upward motion.
