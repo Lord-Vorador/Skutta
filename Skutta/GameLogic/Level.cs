@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skutta.GameLogic
 {
-    class Level
+    public class Level
     {
         private int mapWidth = 32;
         private int[] map = [
@@ -31,6 +31,8 @@ namespace Skutta.GameLogic
             0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
             1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ];
+
+        public int[] Map { get { return map; } }
 
         //16x9
 
@@ -56,7 +58,6 @@ namespace Skutta.GameLogic
 
         public void Update(GameTime gameTime)
         {
-            // Update level
         }
         public void Draw(SpriteBatch spriteBatch)
         {

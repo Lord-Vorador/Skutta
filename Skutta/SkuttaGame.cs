@@ -144,9 +144,11 @@ public class SkuttaGame : Game
             }
         }
 
+        //_level.Update(gameTime);
+
         foreach (var player in _players)
         {
-            player.Update(gameTime);
+            player.Update(gameTime, _level);
         }
 
         foreach (var controller in _playerControllers)
