@@ -25,8 +25,6 @@ public class SkuttaGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _audioDevice = new AudioDevice();
-        _graphics.PreferredBackBufferWidth = 800;
-        _graphics.PreferredBackBufferHeight = 600;
     }
 
     protected override void Initialize()
@@ -41,7 +39,7 @@ public class SkuttaGame : Game
         _audioDevice.LoadContent(Content);
         _audioDevice.PlayRandomSong();
 
-        _player.Initialize(GraphicsDevice, _audioDevice);
+        //_player.Initialize(GraphicsDevice, _audioDevice);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
@@ -53,7 +51,7 @@ public class SkuttaGame : Game
         var playerModel = Content.Load<Model>("Models/poop");
         //Texture2D texture = Content.Load<Texture2D>("Images/poop");
         //playerModel.Meshes[0].Effects[0].Texture = texture;
-        _player.Initialize(GraphicsDevice, playerModel);
+        _player.Initialize(GraphicsDevice, playerModel, _audioDevice);
         // TODO: use this.Content to load your game content here
     }
 

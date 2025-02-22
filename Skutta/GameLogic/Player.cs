@@ -12,7 +12,7 @@ namespace Skutta.GameLogic
 {
     class Player
     {
-        SpriteBatch spriteBatch;
+        AudioDevice _audioDevice;
         // A texture for the box and its rectangle
         Texture2D playerTexture;
         Model playerModel;
@@ -32,7 +32,7 @@ namespace Skutta.GameLogic
         // Locked screen camera parameters.
         // For an 800x600 screen, we'll lock the camera's target to the center (400,300)
         // and place the camera at a fixed distance along Z.
-        Vector3 lockedScreenCenter = new Vector3(400, 300, 0);
+        Vector3 lockedScreenCenter;
         float cameraDistance = 800f;
 
         int screenWidth;
@@ -52,20 +52,20 @@ namespace Skutta.GameLogic
             //body = new Rectangle(100, 100, 50, 50);
         }
 
-        public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice)
-        public void Initialize(GraphicsDevice graphics, Model model)
+        public void Initialize(GraphicsDevice graphics, Model model, AudioDevice audioDevice)
         {
             _audioDevice = audioDevice;
-            spriteBatch = new SpriteBatch(graphics);
-
+            playerModel = model;
             // Create a 1x1 white texture.
-            playerTexture = new Texture2D(graphics, 1, 1);
-            playerTexture.SetData(new[] { Color.White });
+            //playerTexture = new Texture2D(graphics, 1, 1);
+            //playerTexture.SetData(new[] { Color.White });
 
             screenWidth = graphics.Viewport.Width;
             screenHeight = graphics.Viewport.Height;
 
-            //groundLevel = screenHeight - body.Height;
+            lockedScreenCenter = new Vector3(screenWidth / 2, screenHeight / 2, 0);
+
+            //cameraDistance = ;
 
             //body.Y = groundLevel;
             // Place the player on the ground.
@@ -99,7 +99,6 @@ namespace Skutta.GameLogic
             // Jumping logic.
             if (keyboard.IsKeyDown(Keys.Space) && !isJumping)
             {
-                jumpVelocity = -10f; // Negative velocity gives an upward impulse.
                 _audioDevice.PlaySoundEffect("jump");
                 isJumping = true;
                 jumpVelocity = 10f; // Impulse upward.
@@ -153,10 +152,10 @@ namespace Skutta.GameLogic
         {
             // Create the world matrix for the player model.
             // Since this is a 2D platformer, we only modify X and Y (leaving Z constant).
-            //Matrix world = Matrix.CreateScale(1.0f) *
-            //               Matrix.CreateTranslation(playerPosition);
+            Matrix world = Matrix.CreateScale(3.0f) *
+                           Matrix.CreateTranslation(playerPosition);
             // Create the world matrix for the player model.
-            Matrix world = Matrix.CreateTranslation(playerPosition);
+           // Matrix world = Matrix.CreateTranslation(playerPosition);
 
             // Draw the 3D player model.
             foreach (ModelMesh mesh in playerModel.Meshes)
