@@ -23,7 +23,7 @@ public class SkuttaGame : Game
     private bool _fullScreen = false;
     private KeyboardManager _keyboardManager;
     private SkuttaClient _skuttaClient;
-
+    //andre gör saker
     public SkuttaGame()
     {
         _graphics = new GraphicsDeviceManager(this);
