@@ -39,21 +39,7 @@ public class SkuttaGame : Game
         _audioDevice.LoadContent(Content);
         _audioDevice.PlayRandomSong();
 
-        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
-        _player.Initialize(GraphicsDevice, _soundEffect);
-        // TODO: use this.Content to load your game content here
-
-        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
-
-        MediaPlayer.Play(_song);
-        MediaPlayer.Volume = 0.5f;
-        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
-        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
-
-        MediaPlayer.Play(_song);
-        MediaPlayer.Volume = 0.5f;
-
-        _player.Initialize(GraphicsDevice, _soundEffect);
+        _player.Initialize(GraphicsDevice, _audioDevice);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
