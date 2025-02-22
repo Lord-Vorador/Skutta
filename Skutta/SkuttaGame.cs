@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Skutta.Common.ValueTypes;
+using Skutta.Network;
+using Skutta.Network.NetworkMessages.Client;
+using System.Collections.Generic;
 
 namespace Skutta;
 
@@ -8,6 +12,7 @@ public class SkuttaGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private SkuttaClient _skuttaClient;
 
     public SkuttaGame()
     {
@@ -18,7 +23,9 @@ public class SkuttaGame : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
+        _skuttaClient = new SkuttaClient();
+        _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
+        _skuttaClient.SendMessage(new ClientConnectingMessage());
 
         base.Initialize();
     }
@@ -35,7 +42,13 @@ public class SkuttaGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        var input = new List<SkuttaInput>()
+        {
+            SkuttaInput.MoveRight,
+            SkuttaInput.MoveLeft
+        };
+        
+        _skuttaClient.SendMessage(new NewInputMessage(input));
 
         base.Update(gameTime);
     }
