@@ -3,16 +3,18 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Reflection;
 
 namespace Skutta.GameLogic
 {
-    class Player
+    public class Player
     {
         SpriteBatch spriteBatch;
         Texture2D playerTexture;
         Vector2 _position = new Vector2(400, 400);
         Vector2 _velocity = Vector2.Zero;
-        Point _playerSize = new Point(32, 32);
+        Point _playerSize = new Point(50, 50);
+        float jumpImpulse = 10f;
         int groundLevel; // Y position where the box rests.
 
         int screenWidth;
@@ -76,7 +78,7 @@ namespace Skutta.GameLogic
         public void SetJumping()
         {
             _audioDevice.PlaySoundEffect("jump");
-            _velocity.Y = -10;
+            _velocity.Y = -jumpImpulse;
         }
 
         internal void SetMovingRight()
@@ -87,6 +89,16 @@ namespace Skutta.GameLogic
         internal void SetMovingLeft()
         {
             _velocity.X = -10;
+        }
+
+        public Rectangle GetBody()
+        {
+            return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
+        }
+
+        public void AddEffect(string name)
+        {
+            jumpImpulse += 5f;
         }
     }
 }

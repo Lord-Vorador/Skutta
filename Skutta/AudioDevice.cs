@@ -1,15 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using Skutta.GameLogic;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skutta
 {
@@ -20,6 +14,8 @@ namespace Skutta
 
         public AudioDevice()
         {
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.5f;
             _songs = new Dictionary<string, Song>();
             _soundEffects = new Dictionary<string, SoundEffect>();
         }
@@ -27,6 +23,8 @@ namespace Skutta
         public void LoadContent(ContentManager content)
         {
             LoadSoundEffect(content, "jump", "Audio/Effects/jump");
+            LoadSoundEffect(content, "coin-pickup", "Audio/Effects/coin-pickup");
+
             LoadSong(content, "alien", "Audio/Music/alien");
             LoadSong(content, "loop-4", "Audio/Music/loop-4");
             LoadSong(content, "pattaya", "Audio/Music/pattaya-by-scandinavianz");
