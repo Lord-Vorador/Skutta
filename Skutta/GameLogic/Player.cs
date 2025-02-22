@@ -31,7 +31,7 @@ namespace Skutta.GameLogic
 
         public Player()
         {
-            body = new Rectangle(100, 100, 50, 50);
+            body = new Rectangle(100, 100, 32, 32);
         }
 
         public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice)
