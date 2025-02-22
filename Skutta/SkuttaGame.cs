@@ -14,15 +14,14 @@ public class SkuttaGame : Game
     private Player _player = new();
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
-
-    Song _song;
-    SoundEffect _soundEffect;
+    private AudioDevice _audioDevice;
 
     public SkuttaGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        _audioDevice = new AudioDevice();
     }
 
     protected override void Initialize()
@@ -34,25 +33,10 @@ public class SkuttaGame : Game
 
     protected override void LoadContent()
     {
-        //_spriteBatch = new SpriteBatch(GraphicsDevice);
+        _audioDevice.LoadContent(Content);
+        _audioDevice.PlayRandomSong();
 
-        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
-        _player.Initialize(GraphicsDevice, _soundEffect);
-        // TODO: use this.Content to load your game content here
-
-        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
-        
-
-
-        MediaPlayer.Play(_song);
-        MediaPlayer.Volume = 0.5f;
-        _song = Content.Load<Song>("Audio/Music/pattaya-by-scandinavianz");
-        _soundEffect = Content.Load<SoundEffect>("Audio/Effects/jump");
-
-        MediaPlayer.Play(_song);
-        MediaPlayer.Volume = 0.5f;
-
-        _player.Initialize(GraphicsDevice, _soundEffect);
+        _player.Initialize(GraphicsDevice, _audioDevice);
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
