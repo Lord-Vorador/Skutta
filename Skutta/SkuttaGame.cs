@@ -83,9 +83,10 @@ public class SkuttaGame : Game
         _players.Add(player2);
         _playerControllers.Add(new NetworkController(player2));
 
+        var jumpPickupTexture = Content.Load<Texture2D>("jump-pickup");
         foreach (var pickuppable in _pickuppables)
         {
-            pickuppable.Initialize(GraphicsDevice, _audioDevice);
+            pickuppable.Initialize(GraphicsDevice, [jumpPickupTexture], _audioDevice);
         }
 
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -94,9 +95,11 @@ public class SkuttaGame : Game
         _backgroundTexture = Content.Load<Texture2D>("background");
 
         //var levelGround = Content.Load<Texture2D>("level_ground");
-        var levelPlatform = Content.Load<Texture2D>("level_platform");
+        var levelPlatform = Content.Load<Texture2D>("brick");
         var levelGround = new Texture2D(GraphicsDevice, 1, 1);
         levelGround.SetData(new[] { Color.Green });
+        
+
 
         //var levelPlatform = new Texture2D(GraphicsDevice, 1, 1);
         //levelPlatform.SetData(new[] { Color.Silver });
