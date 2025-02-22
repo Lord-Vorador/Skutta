@@ -100,5 +100,10 @@ namespace Skutta.GameLogic
         {
             _position = position;
         }
+
+        internal Rectangle GetPlayerBoundingBox()
+        {
+            return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
+        }
     }
 }

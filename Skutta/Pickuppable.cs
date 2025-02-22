@@ -38,7 +38,7 @@ namespace Skutta
         private bool IsColliding(Player player)
         {
             // Assuming PlayerIndex is an enum and we have a way to get the player's body rectangle
-            Rectangle playerBody = player.GetBody();
+            Rectangle playerBody = player.GetPlayerBoundingBox();
 
             // Calculate the centers of both rectangles
             Vector2 pickuppableCenter = new Vector2(_body.X + _body.Width / 2, _body.Y + _body.Height / 2);

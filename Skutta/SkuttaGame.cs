@@ -120,7 +120,10 @@ public class SkuttaGame : Game
             }
             else
             {
-                pickuppable.Update(gameTime, _player);
+                foreach (var player in _players)
+                {
+                    pickuppable.Update(gameTime, player);
+                }
             }
         }
 
@@ -128,7 +131,6 @@ public class SkuttaGame : Game
         {
             player.Update(gameTime);
         }
-        _player.Update(gameTime);
 
         foreach (var controller in _playerControllers)
         {
@@ -144,7 +146,10 @@ public class SkuttaGame : Game
             }
             else
             {
-                pickuppable.Update(gameTime, _player);
+                foreach (var player in _players)
+                {
+                    pickuppable.Update(gameTime, player);
+                }
             }
         }
 
