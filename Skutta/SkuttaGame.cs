@@ -16,7 +16,8 @@ public class SkuttaGame : Game
 {
     private GraphicsDeviceManager _graphics;
     //private SpriteBatch _spriteBatch;
-    private Player _player = new();
+    private IController _playerController;
+    private Player _player;
     private SpriteBatch _spriteBatch;
     private Texture2D _backgroundTexture;
     private AudioDevice _audioDevice;
@@ -32,6 +33,8 @@ public class SkuttaGame : Game
         IsMouseVisible = true;
         _level = new Level();
         _audioDevice = new AudioDevice();
+        _player = new();
+        _playerController = new PlayerController(_player);
         _graphics.PreferredBackBufferWidth = 1024; // Set to your default window width
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
     }
@@ -85,6 +88,8 @@ public class SkuttaGame : Game
         };
         
         _skuttaClient.SendMessage(new InputMessage(input));
+
+        _playerController.Update(gameTime);
 
         _level.Update(gameTime);
         _player.Update(gameTime);
