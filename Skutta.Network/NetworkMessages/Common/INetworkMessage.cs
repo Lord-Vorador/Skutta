@@ -2,6 +2,5 @@
 
 public interface INetworkMessage
 {
-//    byte[] ReadBytes();
-//    void WriteBytes();
+    //byte[] SerializeToByteArray();
 }
