@@ -208,6 +208,7 @@ namespace Skutta.GameLogic
 
         internal void smash()
         {
+            _audioDevice.PlaySoundEffect("goopy");
             isSmashed = true;
         }
 

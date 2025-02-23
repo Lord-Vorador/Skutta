@@ -25,6 +25,9 @@ namespace Skutta
             LoadSoundEffect(content, "jump", "Audio/Effects/jump");
             LoadSoundEffect(content, "coin-pickup", "Audio/Effects/coin-pickup");
             LoadSoundEffect(content, "run-powerup", "Audio/Effects/run-powerup");
+            LoadSoundEffect(content, "goopy", "Audio/Effects/goopy");
+            LoadSoundEffect(content, "splat", "Audio/Effects/splat");
+            LoadSoundEffect(content, "squish", "Audio/Effects/squish");
 
             LoadSong(content, "alien", "Audio/Music/alien");
             LoadSong(content, "loop-4", "Audio/Music/loop-4");
