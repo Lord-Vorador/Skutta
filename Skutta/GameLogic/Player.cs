@@ -228,7 +228,7 @@ namespace Skutta.GameLogic
 
             if (isSmashed)
             {
-                Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 32);
+                Vector2 centerPosition = new Vector2(rectangle.Center.X + 4, rectangle.Center.Y + 8);
                 var rect = new Rectangle(0, 0, 16, 6);
                 spriteBatch.Draw(_playerTexture, centerPosition, rect, _playerColor, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
             }
