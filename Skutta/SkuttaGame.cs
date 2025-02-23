@@ -98,7 +98,7 @@ public class SkuttaGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
-        _backgroundTexture = Content.Load<Texture2D>("background");
+        _backgroundTexture = Content.Load<Texture2D>("background2");
         _renderTarget = new RenderTarget2D(GraphicsDevice, _gameWidth, _gameHeight);
 
         //var levelGround = Content.Load<Texture2D>("level_ground");

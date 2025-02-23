@@ -40,7 +40,7 @@ namespace Skutta.GameLogic
 
             // Create a 1x1 white texture.
             _playerTexture = new Texture2D(graphics, 1, 1);
-            _playerTexture = content.Load<Texture2D>("player2");
+            _playerTexture = content.Load<Texture2D>("player");
 
             screenWidth = graphics.Viewport.Width;
             screenHeight = graphics.Viewport.Height;
@@ -281,10 +281,10 @@ namespace Skutta.GameLogic
         {
             var rectangle = new Microsoft.Xna.Framework.Rectangle(new Point((int)_position.X, (int)_position.Y), _playerSize);
 
-            spriteBatch.Begin();
-            Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
-            spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(_playerTexture.Width / 2f, _playerTexture.Height / 2f),
-                1f, _spriteEffects, 0f);
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 16);
+            spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(_playerTexture.Width, _playerTexture.Height),
+                2f, _spriteEffects, 0f);
             spriteBatch.End();
         }
 
@@ -300,13 +300,13 @@ namespace Skutta.GameLogic
         internal void SetMovingRight(int speed = 10)
         {
             _velocity.X = speed;
-            _spriteEffects = SpriteEffects.FlipHorizontally;
+            _spriteEffects = SpriteEffects.None;
         }
 
         internal void SetMovingLeft(int speed = 10)
         {
             _velocity.X = -speed;
-            _spriteEffects = SpriteEffects.None;
+            _spriteEffects = SpriteEffects.FlipHorizontally;
         }
 
         public void AddEffect(string name)
