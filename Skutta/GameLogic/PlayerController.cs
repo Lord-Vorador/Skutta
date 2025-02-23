@@ -14,6 +14,7 @@ namespace Skutta.GameLogic
     {
         private Player _player;
         private readonly SkuttaClient skuttaClient;
+        private double timeToSend = 0.0;
 
         public string Name { get; set; }
 
@@ -36,7 +37,13 @@ namespace Skutta.GameLogic
             if (keyboardState.IsKeyDown(Keys.Left))
                 _player.SetMovingLeft();
 
-            skuttaClient.SendMessage(new PlayerPositionMessage() { Position = _player.GetPosition() });
+            timeToSend += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeToSend > 0.2)
+            {
+                skuttaClient.SendMessage(new PlayerPositionMessage() { Position = _player.GetPosition() });
+                timeToSend = 0.0;
+            }
         }
 
         public void SetPosition(Vector2 pos)
