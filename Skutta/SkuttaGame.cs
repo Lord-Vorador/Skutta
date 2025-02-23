@@ -43,18 +43,6 @@ public class SkuttaGame : Game
         _audioDevice = new AudioDevice();
         _graphics.PreferredBackBufferWidth = _gameWidth * 2; // Set to your default window width
         _graphics.PreferredBackBufferHeight = _gameHeight * 2; // Set to your default window height
-
-        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
-    }
-
-    private void GenerateRandomPickuppables(int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            int xPos = _random.Next(0, 1024);
-            int yPos = _random.Next(0, 576);
-            _pickuppables.Add(new Pickuppable(xPos, yPos));
-        }
     }
 
     protected override void Initialize()
@@ -62,7 +50,7 @@ public class SkuttaGame : Game
         // TODO: Add your initialization logic here
         _keyboardManager = new KeyboardManager();
         _skuttaClient = new SkuttaClient();
-        _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
+        _skuttaClient.Connect("192.168.1.102", NetworkCommonConstants.GameServerPort);
 
         _players = new List<Player>();
         _playerControllers = new List<IController>();
@@ -82,12 +70,8 @@ public class SkuttaGame : Game
         _playerControllers.Add(new PlayerController(player, _skuttaClient));
 
 
-        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
-        foreach (var pickuppable in _pickuppables)
-        {
-            pickuppable.Initialize(GraphicsDevice, [jumpPickupTexture], _audioDevice);
-        }
-
+        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
+        
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
@@ -111,6 +95,33 @@ public class SkuttaGame : Game
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
     }
 
+    private void GenerateRandomPickuppables(int count)
+    {
+        var runPickupTexture = Content.Load<Texture2D>("run-powerup");
+        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
+        
+        for (int i = 0; i < count; i++)
+        {
+            Pickuppable powerup;
+            int xPos = _random.Next(0, 512/32) * 32;
+            int yPos = _random.Next(0, 288/32) * 32;
+            int type = _random.Next(0, 2);
+            switch (type)
+            {
+                case 0:
+                    powerup = new JumpPowerup(xPos, yPos);
+                    powerup.Initialize(GraphicsDevice, jumpPickupTexture, _audioDevice);
+                    _pickuppables.Add(powerup);
+                    break;
+                case 1:
+                    powerup = new RunPowerup(xPos, yPos);
+                    powerup.Initialize(GraphicsDevice, runPickupTexture, _audioDevice);
+                    _pickuppables.Add(powerup);
+                    break;
+            }
+
+        }
+    }
     private Player CreateNewPlayer()
     {
         var player = new Player();
@@ -126,7 +137,7 @@ public class SkuttaGame : Game
         if (_skuttaClient.IsConnected() && !_hasSentHelloMsg)
         {
             _hasSentHelloMsg = true;
-            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björn" });
+            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björnen" });
         }
 
         //        var input = new SkuttaInput[]

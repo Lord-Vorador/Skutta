@@ -20,6 +20,7 @@ namespace Skutta.GameLogic
         Vector2 _velocity = Vector2.Zero;
         Point _playerSize = new Point(32, 32);
         float jumpImpulse = 10f;
+        float mooveSpeed = 10f;
         int groundLevel; // Y position where the box rests.
 
         int screenWidth;
@@ -309,19 +310,24 @@ namespace Skutta.GameLogic
 
         internal void SetMovingRight(int speed = 10)
         {
-            _velocity.X = speed;
-            _spriteEffects = SpriteEffects.None;
+            _velocity.X = mooveSpeed;
+            _spriteEffects = SpriteEffects.FlipHorizontally;
         }
 
         internal void SetMovingLeft(int speed = 10)
         {
-            _velocity.X = -speed;
-            _spriteEffects = SpriteEffects.FlipHorizontally;
+            _velocity.X = -mooveSpeed;
+            _spriteEffects = SpriteEffects.None;
         }
 
-        public void AddEffect(string name)
+        public void JumpPowerup()
         {
             jumpImpulse += 5f;
+        }
+
+        public void MovePowerup()
+        {
+            mooveSpeed += 5f;
         }
 
         internal void SetPosition(Vector2 position)

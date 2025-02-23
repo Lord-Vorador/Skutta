@@ -22,7 +22,7 @@ namespace Skutta.GameLogic
         {
             _player = player;
             this.skuttaClient = skuttaClient;
-            Name = "Björn";
+            Name = "Björnen";
         }
 
         public void Update(GameTime gameTime)
