@@ -12,9 +12,7 @@ namespace Skutta.GameLogic
 {
     public class Player
     {
-        GraphicsDevice _graphicsDevice;
         SpriteEffects _spriteEffects;
-        Rectangle _body;
         Texture2D _playerTexture;
         Vector2 _position = new Vector2(400, 200);
         Vector2 _velocity = Vector2.Zero;
