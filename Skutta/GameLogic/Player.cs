@@ -149,9 +149,20 @@ namespace Skutta.GameLogic
             var rectangle = new Microsoft.Xna.Framework.Rectangle(new Point((int)(_position.X), (int)(_position.Y)),
                 new Point((int)(SkuttaGame._tileSize), (int)(SkuttaGame._tileSize)));
 
-            Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
-            spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(8, 8),
-                1f, _spriteEffects, 0f);
+            //Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
+            //spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
+
+            if (isSmashed)
+            {
+                Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 32);
+                var rect = new Rectangle(0, 0, 16, 6);
+                spriteBatch.Draw(_playerTexture, centerPosition, rect, Color.White, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
+            }
+            else
+            {
+                Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
+                spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
+            }
         }
 
         public void SetJumping()
