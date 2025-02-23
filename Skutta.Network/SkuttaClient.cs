@@ -86,7 +86,7 @@ namespace Skutta.Network
             outgoingMsg.Write((byte)SkuttaMessageTypes.PlayerPosition);
             outgoingMsg.Write(msg.Position.X);
             outgoingMsg.Write(msg.Position.Y);
-            _client.SendMessage(outgoingMsg, NetDeliveryMethod.ReliableOrdered);
+            _client.SendMessage(outgoingMsg, NetDeliveryMethod.UnreliableSequenced);
         }
 
         public void SendMessage(PlayerConnectingMessage msg)

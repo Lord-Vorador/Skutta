@@ -39,7 +39,7 @@ namespace Skutta.GameLogic
 
             timeToSend += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (timeToSend > 0.2)
+            if (timeToSend > 0.01)
             {
                 skuttaClient.SendMessage(new PlayerPositionMessage() { Position = _player.GetPosition() });
                 timeToSend = 0.0;
