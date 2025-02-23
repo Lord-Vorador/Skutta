@@ -16,22 +16,25 @@ namespace Skutta.GameLogic
         Texture2D _playerTexture;
         Vector2 _position = new Vector2(400, 200);
         Vector2 _velocity = Vector2.Zero;
-        float jumpImpulse = 10f;
-        float mooveSpeed = 10f;
+        float jumpImpulse = 15f;
+        float moveSpeed = 5f;
         int groundLevel; // Y position where the box rests.
 
         int screenWidth;
         int screenHeight;
 
         private AudioDevice _audioDevice;
-        private float _gravity = 0.5f;
+        private float _gravity = 1.5f;
 
         public bool onGround = false;
         public int height;
         private bool isSmashed;
 
-        public Player()
+        Color _playerColor;
+
+        public Player(Color playerColor)
         {
+            _playerColor = playerColor;
         }
 
         public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice, ContentManager content)
@@ -144,27 +147,6 @@ namespace Skutta.GameLogic
                 _position.Y = 0;
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            var rectangle = new Microsoft.Xna.Framework.Rectangle(new Point((int)(_position.X), (int)(_position.Y)),
-                new Point((int)(SkuttaGame._tileSize), (int)(SkuttaGame._tileSize)));
-
-            //Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
-            //spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
-
-            if (isSmashed)
-            {
-                Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 32);
-                var rect = new Rectangle(0, 0, 16, 6);
-                spriteBatch.Draw(_playerTexture, centerPosition, rect, Color.White, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
-            }
-            else
-            {
-                Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
-                spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
-            }
-        }
-
         public void SetJumping()
         {
             if (_velocity.Y == 0 && onGround)
@@ -174,26 +156,26 @@ namespace Skutta.GameLogic
             }
         }
 
-        internal void SetMovingRight(int speed = 10)
+        internal void SetMovingRight()
         {
-            _velocity.X = mooveSpeed;
-            _spriteEffects = SpriteEffects.FlipHorizontally;
+            _velocity.X = moveSpeed;
+            _spriteEffects = SpriteEffects.None;
         }
 
-        internal void SetMovingLeft(int speed = 10)
+        internal void SetMovingLeft()
         {
-            _velocity.X = -mooveSpeed;
-            _spriteEffects = SpriteEffects.None;
+            _velocity.X = -moveSpeed;
+            _spriteEffects = SpriteEffects.FlipHorizontally;
         }
 
         public void JumpPowerup()
         {
-            jumpImpulse += 5f;
+            jumpImpulse += 1f;
         }
 
         public void MovePowerup()
         {
-            mooveSpeed += 5f;
+            moveSpeed += 1f;
         }
 
         internal void SetPosition(Vector2 position)
@@ -238,5 +220,24 @@ namespace Skutta.GameLogic
         {
             return _spriteEffects == SpriteEffects.FlipHorizontally;
         }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            var rectangle = new Microsoft.Xna.Framework.Rectangle(new Point((int)(_position.X), (int)(_position.Y)),
+                new Point((int)(SkuttaGame._tileSize), (int)(SkuttaGame._tileSize)));
+
+            if (isSmashed)
+            {
+                Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 32);
+                var rect = new Rectangle(0, 0, 16, 6);
+                spriteBatch.Draw(_playerTexture, centerPosition, rect, _playerColor, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
+            }
+            else
+            {
+                Vector2 centerPosition = new Vector2(rectangle.Center.X, rectangle.Center.Y);
+                spriteBatch.Draw(_playerTexture, centerPosition, null, _playerColor, 0f, new Vector2(8, 8), 1f, _spriteEffects, 0f);
+            }
+        }
+
     }
 }

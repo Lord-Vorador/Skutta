@@ -131,9 +131,18 @@ public class SkuttaGame : Game
     }
     private Player CreateNewPlayer()
     {
-        var player = new Player();
+        var player = new Player(GetRandomColor());
         player.Initialize(GraphicsDevice, _audioDevice, Content);
         return player;
+    }
+
+    private Color GetRandomColor()
+    {
+        Random random = new Random();
+        byte r = (byte)(random.Next(128) + 128);
+        byte g = (byte)(random.Next(128) + 128);
+        byte b = (byte)(random.Next(128) + 128);
+        return new Color(r, g, b);
     }
 
     protected override void Update(GameTime gameTime)
