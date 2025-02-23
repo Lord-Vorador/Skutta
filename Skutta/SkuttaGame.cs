@@ -126,7 +126,6 @@ public class SkuttaGame : Game
                     _pickuppables.Add(powerup);
                     break;
             }
-
         }
     }
     private Player CreateNewPlayer()
