@@ -85,9 +85,9 @@ public class SkuttaGame : Game
         _players.Add(player);
         _playerControllers.Add(new PlayerController(player));
 
-        var player2 = CreateNewPlayer();
-        _players.Add(player2);
-        _playerControllers.Add(new NetworkController(player2));
+        //var player2 = CreateNewPlayer();
+        //_players.Add(player2);
+        //_playerControllers.Add(new NetworkController(player2));
 
         var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
         foreach (var pickuppable in _pickuppables)
@@ -136,8 +136,6 @@ public class SkuttaGame : Game
             SkuttaInput.MoveLeft
         };
         
-        _skuttaClient.SendMessage(new InputMessage(input));
-
         foreach (var pickuppable in _pickuppables)
         {
             if (pickuppable.IsPicked)
