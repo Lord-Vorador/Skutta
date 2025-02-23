@@ -344,5 +344,10 @@ namespace Skutta.GameLogic
         {
             return _position;
         }
+
+        internal bool GetDirection()
+        {
+            return _spriteEffects == SpriteEffects.FlipHorizontally;
+        }
     }
 }

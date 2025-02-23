@@ -22,7 +22,7 @@ namespace Skutta.GameLogic
         {
             _player = player;
             this.skuttaClient = skuttaClient;
-            Name = "Björnen";
+            Name = "Hej";
         }
 
         public void Update(GameTime gameTime)
@@ -41,12 +41,17 @@ namespace Skutta.GameLogic
 
             if (timeToSend > 0.01)
             {
-                skuttaClient.SendMessage(new PlayerPositionMessage() { Position = _player.GetPosition() });
+                skuttaClient.SendMessage(new PlayerPositionMessage() { Position = _player.GetPosition(), Direction = _player.GetDirection() });
                 timeToSend = 0.0;
             }
         }
 
         public void SetPosition(Vector2 pos)
+        {
+            // Do nuffin'
+        }
+
+        public void SetDirection(bool direction)
         {
             // Do nuffin'
         }

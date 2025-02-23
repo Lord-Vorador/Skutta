@@ -57,6 +57,8 @@ public class SkuttaGame : Game
 
         _graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
 
+        _skuttaClient.MessageReceived2 += this.OnMessageReceived;
+
         base.Initialize();
     }
 
@@ -137,7 +139,7 @@ public class SkuttaGame : Game
         if (_skuttaClient.IsConnected() && !_hasSentHelloMsg)
         {
             _hasSentHelloMsg = true;
-            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björnen" });
+            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björn" });
         }
 
         //        var input = new SkuttaInput[]
@@ -147,7 +149,6 @@ public class SkuttaGame : Game
         //        };
         //        
         //        _skuttaClient.SendMessage(new InputMessage(input));
-        _skuttaClient.MessageReceived2 += this.OnMessageReceived;
 
         foreach (var pickuppable in _pickuppables)
         {
@@ -216,12 +217,14 @@ public class SkuttaGame : Game
             string name = message.ReadString();
             float posX = message.ReadFloat();
             float posY = message.ReadFloat();
+            bool direction = message.ReadBoolean();
 
             var controller = _playerControllers.Find(x => x.Name == name);
 
             if (controller != null) 
             {
                 controller.SetPosition(new Vector2(posX, posY));
+                controller.SetDirection(direction);
             }
             else
             {

@@ -30,4 +30,16 @@ internal class NetworkController : IController
     {
         _player.SetPosition(pos);
     }
+
+    public void SetDirection(bool direction)
+    {
+        if (direction)
+        {
+            _player.SetMovingLeft();
+        }
+        else
+        {
+            _player.SetMovingRight();
+        }
+    }
 }
