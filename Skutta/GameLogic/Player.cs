@@ -105,5 +105,10 @@ namespace Skutta.GameLogic
         {
             return new Rectangle((int)_position.X, (int)_position.Y, _playerSize.X, _playerSize.Y);
         }
+
+        public Vector2 GetPosition()
+        {
+            return _position;
+        }
     }
 }

@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Skutta.Network;
 
-public enum SkuttaMessageTypes
+public enum SkuttaMessageTypes : byte
 {
     ClientConnecting,
-
-
-    PlayerMovement = 100,
-    //RequestHostList,
-    //RequestIntroduction,
+    PlayerPosition = 100,
+    BroadcastPosition = 101,
 }

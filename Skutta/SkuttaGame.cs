@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Skutta.Common.ValueTypes;
 using Skutta.Network;
 using Skutta.Network.NetworkMessages.Client;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Media;
 using Skutta.GameLogic;
 using Skutta.Engine;
-using System.Numerics;
-using System.Collections.Generic;
 using System;
+using Lidgren.Network;
 
 namespace Skutta;
 
@@ -32,6 +28,7 @@ public class SkuttaGame : Game
     private Random _random = new();
 
     private Level _level;
+    private bool _hasSentHelloMsg = false;
 
     public SkuttaGame()
     {
@@ -62,7 +59,6 @@ public class SkuttaGame : Game
         _keyboardManager = new KeyboardManager();
         _skuttaClient = new SkuttaClient();
         _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
-        //_skuttaClient.SendMessage(new ClientConnectingMessage());
 
         _players = new List<Player>();
         _playerControllers = new List<IController>();
@@ -77,11 +73,7 @@ public class SkuttaGame : Game
 
         var player = CreateNewPlayer();
         _players.Add(player);
-        _playerControllers.Add(new PlayerController(player));
-
-        var player2 = CreateNewPlayer();
-        _players.Add(player2);
-        _playerControllers.Add(new NetworkController(player2));
+        _playerControllers.Add(new PlayerController(player, _skuttaClient));
 
         foreach (var pickuppable in _pickuppables)
         {
@@ -120,13 +112,20 @@ public class SkuttaGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        var input = new SkuttaInput[]
+        if (_skuttaClient.IsConnected() && !_hasSentHelloMsg)
         {
-            SkuttaInput.MoveRight,
-            SkuttaInput.MoveLeft
-        };
-        
-        _skuttaClient.SendMessage(new InputMessage(input));
+            _hasSentHelloMsg = true;
+            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björn" });
+        }
+
+        //        var input = new SkuttaInput[]
+        //        {
+        //            SkuttaInput.MoveRight,
+        //            SkuttaInput.MoveLeft
+        //        };
+        //        
+        //        _skuttaClient.SendMessage(new InputMessage(input));
+        _skuttaClient.MessageReceived2 += this.OnMessageReceived;
 
         foreach (var pickuppable in _pickuppables)
         {
@@ -147,7 +146,7 @@ public class SkuttaGame : Game
         foreach (var player in _players)
         {
             player.Update(gameTime);
-        }
+        } 
 
         foreach (var controller in _playerControllers)
         {
@@ -177,6 +176,41 @@ public class SkuttaGame : Game
 
         _keyboardManager.Update();
         base.Update(gameTime);
+    }
+
+    private void OnMessageReceived(NetIncomingMessage message)
+    {
+        if (message.PositionInBytes >= message.LengthBytes)
+        {
+            return;
+        }
+
+        byte msgType = message.ReadByte();
+
+        if (msgType == (byte)SkuttaMessageTypes.BroadcastPosition)
+        {
+            string name = message.ReadString();
+            float posX = message.ReadFloat();
+            float posY = message.ReadFloat();
+
+            var controller = _playerControllers.Find(x => x.Name == name);
+
+            if (controller != null) 
+            {
+                controller.SetPosition(new Vector2(posX, posY));
+            }
+            else
+            {
+                var player = CreateNewPlayer();
+                _players.Add(player);
+                _playerControllers.Add(new NetworkController(player, name));
+            }
+
+            //var data = message.Data;//.Skip(1).ToArray();
+            //var msg = SerializationHelper.DeserializeFromBytes<PlayerPositionMessage>(data);
+
+            Console.WriteLine($"Received message: {name} {posX} {posY}");
+        }
     }
 
     private void ToggleFullScreen()
@@ -225,4 +259,11 @@ public class SkuttaGame : Game
 
         base.Draw(gameTime);
     }
+
+    //public void OnNewPlayerConnected()
+    //{
+    //    var player2 = CreateNewPlayer();
+    //    _players.Add(player2);
+    //    _playerControllers.Add(new NetworkController(player2, ));
+    //}
 }
