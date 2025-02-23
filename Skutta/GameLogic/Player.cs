@@ -28,6 +28,8 @@ namespace Skutta.GameLogic
         private AudioDevice _audioDevice;
         private float _gravity = 0.5f;
 
+        public bool onGround = false;
+
 
         public Player()
         {
@@ -69,7 +71,11 @@ namespace Skutta.GameLogic
                     {
                         Rectangle tileRect = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize);
                         if (rect.Intersects(tileRect))
+                        {
+                            // Collision found.
+                            onGround = tileRect.Bottom > rect.Bottom;
                             return true;
+                        }
                     }
                 }
             }
@@ -98,6 +104,7 @@ namespace Skutta.GameLogic
             {
                 // Horizontal collision: cancel horizontal velocity.
                 _velocity.X = 0;
+                //onGround = true;
             }
 
             // --- Vertical Movement ---
@@ -121,6 +128,9 @@ namespace Skutta.GameLogic
                 // Vertical collision: cancel vertical velocity.
                 // Additionally, if you're falling, you might want to snap the player's position to the top of the colliding tile.
                 _velocity.Y = 0;
+                //onGround = true;
+
+
             }
 
             // Apply gravity for the next frame.
@@ -290,7 +300,7 @@ namespace Skutta.GameLogic
 
         public void SetJumping()
         {
-            if (_velocity.Y == 0)
+            if (_velocity.Y == 0 && onGround)
             { 
                 _audioDevice.PlaySoundEffect("jump");
                 _velocity.Y = -jumpImpulse;
