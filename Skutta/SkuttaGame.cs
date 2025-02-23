@@ -170,6 +170,7 @@ public class SkuttaGame : Game
                 if (player.onTopOf(p))
                 {
                     p.smash();
+                    break;
                 }
             }
 

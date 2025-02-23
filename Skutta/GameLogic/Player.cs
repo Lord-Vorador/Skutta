@@ -31,7 +31,7 @@ namespace Skutta.GameLogic
 
         public bool onGround = false;
         public int height;
-
+        private bool isSmashed;
 
         public Player()
         {
@@ -295,9 +295,17 @@ namespace Skutta.GameLogic
             var rectangle = new Microsoft.Xna.Framework.Rectangle(new Point((int)_position.X, (int)_position.Y), _playerSize);
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 16);
-            var rect = new Rectangle(0, 0, 32, 32);
-            spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(_playerTexture.Width, _playerTexture.Height), 2f, _spriteEffects, 0f);
+            if (isSmashed)
+            {
+                Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 32);
+                var rect = new Rectangle(0, 0, 16, 6);
+                spriteBatch.Draw(_playerTexture, centerPosition, rect, Color.White, 0f, new Vector2(_playerTexture.Width, _playerTexture.Height), 2f, _spriteEffects, 0f);
+            }
+            else
+            {
+                Vector2 centerPosition = new Vector2(rectangle.Center.X + 18, rectangle.Center.Y + 16);
+                spriteBatch.Draw(_playerTexture, centerPosition, null, Color.White, 0f, new Vector2(_playerTexture.Width, _playerTexture.Height), 2f, _spriteEffects, 0f);
+            }
             spriteBatch.End();
         }
 
@@ -339,13 +347,16 @@ namespace Skutta.GameLogic
 
         internal bool onTopOf(Player p)
         {
+            if (this == p || p.isSmashed || isSmashed)
+                return false;
 
             var pbox = p.GetPlayerBoundingBox();
             var box = GetPlayerBoundingBox();
 
             if (pbox.Intersects(box))
             {
-                return true;
+                if (box.Bottom > pbox.Top && box.Top < pbox.Top)
+                    return true;
             }
 
             return false;
@@ -354,7 +365,7 @@ namespace Skutta.GameLogic
 
         internal void smash()
         {
-            height = 5;
+            isSmashed = true;
         }
     }
 }
