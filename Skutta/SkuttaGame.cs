@@ -71,9 +71,9 @@ public class SkuttaGame : Game
         _players.Add(player);
         _playerControllers.Add(new PlayerController(player, _skuttaClient));
 
-        var player2 = CreateNewPlayer();
-        _players.Add(player2);
-        _playerControllers.Add(new NetworkController(player2));
+        //var player2 = CreateNewPlayer();
+        //_players.Add(player2);
+        //_playerControllers.Add(new NetworkController(player2));
 
         GenerateRandomPickuppables(10); // Generate 10 random pickuppables
         
