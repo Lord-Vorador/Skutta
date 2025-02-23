@@ -65,7 +65,7 @@ public class SkuttaGame : Game
         // TODO: Add your initialization logic here
         _keyboardManager = new KeyboardManager();
         _skuttaClient = new SkuttaClient();
-        _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
+        _skuttaClient.Connect("192.168.1.102", NetworkCommonConstants.GameServerPort);
         //_skuttaClient.SendMessage(new ClientConnectingMessage());
 
         _players = new List<Player>();
@@ -87,6 +87,8 @@ public class SkuttaGame : Game
 
         var player2 = CreateNewPlayer();
         _players.Add(player2);
+
+        player2.SetPosition(new Microsoft.Xna.Framework.Vector2(250, 250));
         _playerControllers.Add(new NetworkController(player2));
 
         var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
@@ -159,6 +161,18 @@ public class SkuttaGame : Game
         foreach (var player in _players)
         {
             player.Update(gameTime, _level);
+        }
+
+        foreach (var player in _players)
+        {
+            foreach (var p in _players)
+            {
+                if (player.onTopOf(p))
+                {
+                    p.smash();
+                }
+            }
+
         }
 
         foreach (var controller in _playerControllers)
