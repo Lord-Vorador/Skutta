@@ -43,29 +43,6 @@ public class SkuttaGame : Game
         _audioDevice = new AudioDevice();
         _graphics.PreferredBackBufferWidth = _gameWidth * 2; // Set to your default window width
         _graphics.PreferredBackBufferHeight = _gameHeight * 2; // Set to your default window height
-
-        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
-    }
-
-    private void GenerateRandomPickuppables(int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            int xPos = _random.Next(0, 1024);
-            int yPos = _random.Next(0, 576);
-
-            int type = _random.Next(0, 1);
-            switch (type)
-            {
-                case 0:
-                    _pickuppables.Add(new JumpPowerup(xPos, yPos));
-                    break;
-                case 1:
-                    _pickuppables.Add(new MovePowerup (xPos, yPos));
-                    break;
-            }
-            
-        }
     }
 
     protected override void Initialize()
@@ -93,14 +70,8 @@ public class SkuttaGame : Game
         _playerControllers.Add(new PlayerController(player, _skuttaClient));
 
 
-        var runPickupTexture = Content.Load<Texture2D>("run-powerup");
-        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
-        var movePickupTexture = Content.Load<Texture2D>("move-powerup");
-        foreach (var pickuppable in _pickuppables)
-        {
-            pickuppable.Initialize(GraphicsDevice, jumpPickupTexture, _audioDevice);
-        }
-
+        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
+        
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
@@ -124,6 +95,33 @@ public class SkuttaGame : Game
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
     }
 
+    private void GenerateRandomPickuppables(int count)
+    {
+        var runPickupTexture = Content.Load<Texture2D>("run-powerup");
+        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
+        
+        for (int i = 0; i < count; i++)
+        {
+            Pickuppable powerup;
+            int xPos = _random.Next(0, 512/32) * 32;
+            int yPos = _random.Next(0, 288/32) * 32;
+            int type = _random.Next(0, 2);
+            switch (type)
+            {
+                case 0:
+                    powerup = new JumpPowerup(xPos, yPos);
+                    powerup.Initialize(GraphicsDevice, jumpPickupTexture, _audioDevice);
+                    _pickuppables.Add(powerup);
+                    break;
+                case 1:
+                    powerup = new RunPowerup(xPos, yPos);
+                    powerup.Initialize(GraphicsDevice, runPickupTexture, _audioDevice);
+                    _pickuppables.Add(powerup);
+                    break;
+            }
+
+        }
+    }
     private Player CreateNewPlayer()
     {
         var player = new Player();

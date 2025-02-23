@@ -17,7 +17,7 @@ namespace Skutta
         private Texture2D _texture;
         private Rectangle _body;
         private AudioDevice _audioDevice;
-        protected string _soundEffectName;
+        protected string _soundEffectName = "coin-pickup";
 
         public bool IsPicked { get; set; }
         
@@ -31,8 +31,6 @@ namespace Skutta
         {
             _audioDevice = audioDevice;
             spriteBatch = new SpriteBatch(graphics);
-
-            _soundEffectName = "coin-pickup";
             _texture = sprite;
         }
 
@@ -57,7 +55,7 @@ namespace Skutta
             if (IsColliding(player))
             {
                 OnCollictionOccured(player);
-                _audioDevice.PlaySoundEffect(_soundEffectName);
+                  _audioDevice.PlaySoundEffect(_soundEffectName);
                 IsPicked = true;
             }
         }
