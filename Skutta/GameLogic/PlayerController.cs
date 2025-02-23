@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Skutta.Network;
+using Skutta.Network.NetworkMessages.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,15 @@ namespace Skutta.GameLogic
     internal class PlayerController : IController
     {
         private Player _player;
+        private readonly SkuttaClient skuttaClient;
 
-        public PlayerController(Player player)
+        public string Name { get; set; }
+
+        public PlayerController(Player player, SkuttaClient skuttaClient)
         {
             _player = player;
+            this.skuttaClient = skuttaClient;
+            Name = "Björn";
         }
 
         public void Update(GameTime gameTime)
@@ -29,6 +36,12 @@ namespace Skutta.GameLogic
             if (keyboardState.IsKeyDown(Keys.Left))
                 _player.SetMovingLeft();
 
+            skuttaClient.SendMessage(new PlayerPositionMessage() { Position = _player.GetPosition() });
+        }
+
+        public void SetPosition(Vector2 pos)
+        {
+            // Do nuffin'
         }
     }
 }

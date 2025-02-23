@@ -12,14 +12,22 @@ internal class NetworkController : IController
 {
     private Player _player;
 
-    public NetworkController(Player player)
+    public string Name { get; set; }
+
+    public NetworkController(Player player, string name)
     {
         _player = player;
+        Name = name;
     }
 
     public void Update(GameTime gameTime)
     {
         //Random random = new Random();
         //_player.SetPosition(new Vector2(random.Next(500), random.Next(500)));
+    }
+
+    public void SetPosition(Vector2 pos)
+    {
+        _player.SetPosition(pos);
     }
 }
