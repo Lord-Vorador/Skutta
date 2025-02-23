@@ -31,6 +31,7 @@ namespace Skutta.GameLogic
         private bool isSmashed;
 
         Color _playerColor;
+        private int smashTime = 0;
 
         public Player(Color playerColor)
         {
@@ -145,11 +146,28 @@ namespace Skutta.GameLogic
             // Prevent moving above the top edge.
             if (_position.Y < 0)
                 _position.Y = 0;
+
+            if (isSmashed && smashTime == 0)
+                smashTime = 3000;
+
+
+            if (isSmashed)
+            {
+                smashTime -= gameTime.ElapsedGameTime.Milliseconds;
+                if (smashTime <= 0)
+                {
+                    isSmashed = false;
+                    smashTime = 0;
+                }
+
+            }
+
+
         }
 
         public void SetJumping()
         {
-            if (_velocity.Y == 0 && onGround)
+            if (_velocity.Y == 0 && onGround && !isSmashed)
             { 
                 _audioDevice.PlaySoundEffect("jump");
                 _velocity.Y = -jumpImpulse;
@@ -158,12 +176,18 @@ namespace Skutta.GameLogic
 
         internal void SetMovingRight()
         {
+            if (isSmashed)
+                return;
+
             _velocity.X = moveSpeed;
             _spriteEffects = SpriteEffects.None;
         }
 
         internal void SetMovingLeft()
         {
+            if (isSmashed)
+                return;
+
             _velocity.X = -moveSpeed;
             _spriteEffects = SpriteEffects.FlipHorizontally;
         }
