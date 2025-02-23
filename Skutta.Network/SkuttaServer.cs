@@ -156,7 +156,7 @@ public class SkuttaServer
                     outgoingMsg.Write(playerPositionMsg.Position.Y);
                     outgoingMsg.Write((bool)playerPositionMsg.Direction);
 
-                    _server.SendMessage(outgoingMsg, client.Value.SenderConnection, NetDeliveryMethod.ReliableSequenced, 1);
+                    _server.SendMessage(outgoingMsg, client.Value.SenderConnection, NetDeliveryMethod.UnreliableSequenced, 1);
                 }
             }
         }

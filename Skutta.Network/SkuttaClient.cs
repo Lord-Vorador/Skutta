@@ -73,7 +73,7 @@ namespace Skutta.Network
                     _client.Recycle(message);
                     
                     // Sleep briefly to avoid busy-waiting
-                    System.Threading.Thread.Sleep(10);
+                    System.Threading.Thread.Sleep(2);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace Skutta.Network
             NetOutgoingMessage outgoingMsg = _client.CreateMessage();
             outgoingMsg.Write((byte)SkuttaMessageTypes.ClientConnecting);
             outgoingMsg.Write(msg.Name);
-            _client.SendMessage(outgoingMsg, NetDeliveryMethod.ReliableOrdered);
+            _client.SendMessage(outgoingMsg, NetDeliveryMethod.UnreliableSequenced);
         }
     }
 }

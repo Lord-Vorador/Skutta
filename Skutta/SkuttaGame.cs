@@ -52,7 +52,7 @@ public class SkuttaGame : Game
         // TODO: Add your initialization logic here
         _keyboardManager = new KeyboardManager();
         _skuttaClient = new SkuttaClient();
-        _skuttaClient.Connect("192.168.1.102", NetworkCommonConstants.GameServerPort);
+        _skuttaClient.Connect("192.168.1.53", NetworkCommonConstants.GameServerPort);
 
         _players = new List<Player>();
         _playerControllers = new List<IController>();
