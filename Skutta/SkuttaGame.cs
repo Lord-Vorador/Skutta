@@ -53,7 +53,18 @@ public class SkuttaGame : Game
         {
             int xPos = _random.Next(0, 1024);
             int yPos = _random.Next(0, 576);
-            _pickuppables.Add(new Pickuppable(xPos, yPos));
+
+            int type = _random.Next(0, 1);
+            switch (type)
+            {
+                case 0:
+                    _pickuppables.Add(new JumpPowerup(xPos, yPos));
+                    break;
+                case 1:
+                    _pickuppables.Add(new MovePowerup (xPos, yPos));
+                    break;
+            }
+            
         }
     }
 
@@ -84,9 +95,10 @@ public class SkuttaGame : Game
 
         var runPickupTexture = Content.Load<Texture2D>("run-powerup");
         var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
+        var movePickupTexture = Content.Load<Texture2D>("move-powerup");
         foreach (var pickuppable in _pickuppables)
         {
-            pickuppable.Initialize(GraphicsDevice, [jumpPickupTexture], _audioDevice);
+            pickuppable.Initialize(GraphicsDevice, jumpPickupTexture, _audioDevice);
         }
 
         _spriteBatch = new SpriteBatch(GraphicsDevice);
