@@ -85,7 +85,7 @@ namespace Skutta
         {
             if (!IsPicked)
             {
-                spriteBatch.Begin();
+                spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                 spriteBatch.Draw(_texture, _body, Color.AliceBlue);
                 spriteBatch.End();
             }
