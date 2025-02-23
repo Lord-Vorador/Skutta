@@ -62,7 +62,7 @@ public class SkuttaGame : Game
         // TODO: Add your initialization logic here
         _keyboardManager = new KeyboardManager();
         _skuttaClient = new SkuttaClient();
-        _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
+        _skuttaClient.Connect("192.168.1.102", NetworkCommonConstants.GameServerPort);
 
         _players = new List<Player>();
         _playerControllers = new List<IController>();
@@ -82,6 +82,7 @@ public class SkuttaGame : Game
         _playerControllers.Add(new PlayerController(player, _skuttaClient));
 
 
+        var runPickupTexture = Content.Load<Texture2D>("run-powerup");
         var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
         foreach (var pickuppable in _pickuppables)
         {
@@ -126,7 +127,7 @@ public class SkuttaGame : Game
         if (_skuttaClient.IsConnected() && !_hasSentHelloMsg)
         {
             _hasSentHelloMsg = true;
-            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björn" });
+            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björnen" });
         }
 
         //        var input = new SkuttaInput[]
