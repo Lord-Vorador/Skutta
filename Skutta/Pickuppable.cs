@@ -81,13 +81,11 @@ namespace Skutta
             }
         }
 
-        public void Draw(GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (!IsPicked)
             {
-                spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                 spriteBatch.Draw(_texture, _body, Color.AliceBlue);
-                spriteBatch.End();
             }
         }
     }

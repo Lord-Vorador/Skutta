@@ -31,8 +31,10 @@ public class SkuttaGame : Game
     private bool _hasSentHelloMsg = false;
 
     private RenderTarget2D _renderTarget;
+
     private int _gameWidth = 512;
     private int _gameHeight = 288;
+    public static int _tileSize = 16;
 
     public SkuttaGame()
     {
@@ -62,7 +64,7 @@ public class SkuttaGame : Game
         // TODO: Add your initialization logic here
         _keyboardManager = new KeyboardManager();
         _skuttaClient = new SkuttaClient();
-        _skuttaClient.Connect("127.0.0.1", NetworkCommonConstants.GameServerPort);
+        _skuttaClient.Connect("192.168.1.102", NetworkCommonConstants.GameServerPort);
 
         _players = new List<Player>();
         _playerControllers = new List<IController>();
@@ -126,7 +128,7 @@ public class SkuttaGame : Game
         if (_skuttaClient.IsConnected() && !_hasSentHelloMsg)
         {
             _hasSentHelloMsg = true;
-            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = "Björn" });
+            _skuttaClient.SendMessage(new PlayerConnectingMessage() { Name = Environment.MachineName });
         }
 
         //        var input = new SkuttaInput[]
@@ -248,34 +250,26 @@ public class SkuttaGame : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // Draw to render target
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _gameWidth, _gameHeight), Color.Gray);
-        // Draw other game elements here
+        _level.Draw(_spriteBatch);
+        foreach (var player in _players)
+        {
+            player.Draw(_spriteBatch, gameTime);
+        }
+        foreach (var pickuppable in _pickuppables)
+        {
+            pickuppable.Draw(_spriteBatch, gameTime);
+        }
         _spriteBatch.End();
 
-        // Draw render target to screen
         GraphicsDevice.SetRenderTarget(null);
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _spriteBatch.Draw(_renderTarget, GraphicsDevice.Viewport.Bounds, Color.White);
         _spriteBatch.End();
-
-        base.Draw(gameTime);
-
-        _level.Draw(_spriteBatch);
-
-        foreach (var player in _players)
-        {
-            player.Draw(gameTime);
-        }
-
-        foreach (var pickuppable in _pickuppables)
-        {
-            pickuppable.Draw(gameTime);
-        }
 
         base.Draw(gameTime);
     }
