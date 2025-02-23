@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Skutta.GameLogic;
+using System.Reflection.Metadata;
 
 namespace Skutta
 {
@@ -25,14 +26,15 @@ namespace Skutta
             _body = new Rectangle(xPos, yPos, 30, 30);
         }
 
-        public void Initialize(GraphicsDevice graphics, AudioDevice audioDevice)
+        public void Initialize(GraphicsDevice graphics, Texture2D[] sprites, AudioDevice audioDevice)
         {
             _audioDevice = audioDevice;
             spriteBatch = new SpriteBatch(graphics);
 
             // Create a 1x1 white texture.
-            _texture = new Texture2D(graphics, 1, 1);
-            _texture.SetData(new[] { Color.White });
+
+            _texture = sprites[0];
+            //_texture.SetData(new[] { Color.White });
         }
 
         private bool IsColliding(Player player)
@@ -83,7 +85,7 @@ namespace Skutta
         {
             if (!IsPicked)
             {
-                spriteBatch.Begin();
+                spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                 spriteBatch.Draw(_texture, _body, Color.AliceBlue);
                 spriteBatch.End();
             }
