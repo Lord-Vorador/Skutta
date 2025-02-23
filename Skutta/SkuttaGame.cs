@@ -45,18 +45,6 @@ public class SkuttaGame : Game
         _audioDevice = new AudioDevice();
         _graphics.PreferredBackBufferWidth = _gameWidth * 2; // Set to your default window width
         _graphics.PreferredBackBufferHeight = _gameHeight * 2; // Set to your default window height
-
-        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
-    }
-
-    private void GenerateRandomPickuppables(int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            int xPos = _random.Next(0, 1024);
-            int yPos = _random.Next(0, 576);
-            _pickuppables.Add(new Pickuppable(xPos, yPos));
-        }
     }
 
     protected override void Initialize()
@@ -71,6 +59,8 @@ public class SkuttaGame : Game
 
         _graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
 
+        _skuttaClient.MessageReceived2 += this.OnMessageReceived;
+
         base.Initialize();
     }
 
@@ -83,13 +73,12 @@ public class SkuttaGame : Game
         _players.Add(player);
         _playerControllers.Add(new PlayerController(player, _skuttaClient));
 
+        //var player2 = CreateNewPlayer();
+        //_players.Add(player2);
+        //_playerControllers.Add(new NetworkController(player2));
 
-        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
-        foreach (var pickuppable in _pickuppables)
-        {
-            pickuppable.Initialize(GraphicsDevice, [jumpPickupTexture], _audioDevice);
-        }
-
+        GenerateRandomPickuppables(10); // Generate 10 random pickuppables
+        
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // Load your background image
@@ -113,6 +102,33 @@ public class SkuttaGame : Game
         _graphics.PreferredBackBufferHeight = 576; // Set to your default window height
     }
 
+    private void GenerateRandomPickuppables(int count)
+    {
+        var runPickupTexture = Content.Load<Texture2D>("run-powerup");
+        var jumpPickupTexture = Content.Load<Texture2D>("jump-powerup");
+        
+        for (int i = 0; i < count; i++)
+        {
+            Pickuppable powerup;
+            int xPos = _random.Next(0, 512/32) * 32;
+            int yPos = _random.Next(0, 288/32) * 32;
+            int type = _random.Next(0, 2);
+            switch (type)
+            {
+                case 0:
+                    powerup = new JumpPowerup(xPos, yPos);
+                    powerup.Initialize(GraphicsDevice, jumpPickupTexture, _audioDevice);
+                    _pickuppables.Add(powerup);
+                    break;
+                case 1:
+                    powerup = new RunPowerup(xPos, yPos);
+                    powerup.Initialize(GraphicsDevice, runPickupTexture, _audioDevice);
+                    _pickuppables.Add(powerup);
+                    break;
+            }
+
+        }
+    }
     private Player CreateNewPlayer()
     {
         var player = new Player();
@@ -138,7 +154,6 @@ public class SkuttaGame : Game
         //        };
         //        
         //        _skuttaClient.SendMessage(new InputMessage(input));
-        _skuttaClient.MessageReceived2 += this.OnMessageReceived;
 
         foreach (var pickuppable in _pickuppables)
         {
@@ -161,6 +176,19 @@ public class SkuttaGame : Game
         foreach (var player in _players)
         {
             player.Update(gameTime, _level);
+        }
+
+        foreach (var player in _players)
+        {
+            foreach (var p in _players)
+            {
+                if (player.onTopOf(p))
+                {
+                    p.smash();
+                    break;
+                }
+            }
+
         }
 
         foreach (var controller in _playerControllers)
@@ -207,12 +235,14 @@ public class SkuttaGame : Game
             string name = message.ReadString();
             float posX = message.ReadFloat();
             float posY = message.ReadFloat();
+            bool direction = message.ReadBoolean();
 
             var controller = _playerControllers.Find(x => x.Name == name);
 
             if (controller != null) 
             {
                 controller.SetPosition(new Vector2(posX, posY));
+                controller.SetDirection(direction);
             }
             else
             {

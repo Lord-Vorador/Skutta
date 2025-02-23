@@ -154,6 +154,7 @@ public class SkuttaServer
                     outgoingMsg.Write(connectedPlayer.Name);
                     outgoingMsg.Write(playerPositionMsg.Position.X);
                     outgoingMsg.Write(playerPositionMsg.Position.Y);
+                    outgoingMsg.Write((bool)playerPositionMsg.Direction);
 
                     _server.SendMessage(outgoingMsg, client.Value.SenderConnection, NetDeliveryMethod.ReliableSequenced, 1);
                 }

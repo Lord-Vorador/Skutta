@@ -9,6 +9,7 @@ namespace Skutta.Network.NetworkMessages.Client;
 public class PlayerPositionMessage : INetworkMessage
 {
     public Vector2 Position { get; set; }
+    public bool Direction { get; set; }
 
     public byte[] SerializeToByteArray()
     {

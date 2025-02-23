@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -18,6 +19,7 @@ namespace Skutta.GameLogic
         Vector2 _position = new Vector2(400, 200);
         Vector2 _velocity = Vector2.Zero;
         float jumpImpulse = 10f;
+        float mooveSpeed = 10f;
         int groundLevel; // Y position where the box rests.
 
         int screenWidth;
@@ -27,7 +29,8 @@ namespace Skutta.GameLogic
         private float _gravity = 0.5f;
 
         public bool onGround = false;
-
+        public int height;
+        private bool isSmashed;
 
         public Player()
         {
@@ -38,8 +41,9 @@ namespace Skutta.GameLogic
             _audioDevice = audioDevice;
 
             // Create a 1x1 white texture.
-            _playerTexture = new Texture2D(graphics, 1, 1);
+            //_playerTexture = new Texture2D(graphics, 1, 1);
             _playerTexture = content.Load<Texture2D>("player");
+            height = _playerTexture.Height;
 
             screenWidth = graphics.Viewport.Width;
             screenHeight = graphics.Viewport.Height;
@@ -163,19 +167,24 @@ namespace Skutta.GameLogic
 
         internal void SetMovingRight(int speed = 10)
         {
-            _velocity.X = speed;
-            _spriteEffects = SpriteEffects.None;
+            _velocity.X = mooveSpeed;
+            _spriteEffects = SpriteEffects.FlipHorizontally;
         }
 
         internal void SetMovingLeft(int speed = 10)
         {
-            _velocity.X = -speed;
-            _spriteEffects = SpriteEffects.FlipHorizontally;
+            _velocity.X = -mooveSpeed;
+            _spriteEffects = SpriteEffects.None;
         }
 
-        public void AddEffect(string name)
+        public void JumpPowerup()
         {
             jumpImpulse += 5f;
+        }
+
+        public void MovePowerup()
+        {
+            mooveSpeed += 5f;
         }
 
         internal void SetPosition(Vector2 position)
@@ -188,9 +197,37 @@ namespace Skutta.GameLogic
             return new Rectangle((int)_position.X, (int)_position.Y, SkuttaGame._tileSize, SkuttaGame._tileSize);
         }
 
+        internal bool onTopOf(Player p)
+        {
+            if (this == p || p.isSmashed || isSmashed)
+                return false;
+
+            var pbox = p.GetPlayerBoundingBox();
+            var box = GetPlayerBoundingBox();
+
+            if (pbox.Intersects(box))
+            {
+                if (box.Bottom > pbox.Top && box.Top < pbox.Top)
+                    return true;
+            }
+
+            return false;
+
+        }
+
+        internal void smash()
+        {
+            isSmashed = true;
+        }
+
         public Vector2 GetPosition()
         {
             return _position;
+        }
+
+        internal bool GetDirection()
+        {
+            return _spriteEffects == SpriteEffects.FlipHorizontally;
         }
     }
 }
